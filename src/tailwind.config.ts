@@ -12,6 +12,8 @@ const config: Config = {
       colors: {
         main: '#0089D7',
         inputBg: '#CDE9E9',
+        buttonBg: '#6BB7FE',
+        font: '#514E66',
       },
     },
   },

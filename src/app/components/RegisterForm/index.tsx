@@ -14,6 +14,7 @@ export default function RegisterForm() {
     passIsEqual: false,
     user: '',
   })
+  const [page, setPage] = useState<number>(1)
   return (
     <section className="w-full h-full flex flex-col justify-center items-center p-4">
       <Image src={logo} alt="logo" width={80} height={80} />
@@ -61,11 +62,17 @@ export default function RegisterForm() {
           }
           value={formData.passCheck}
         />
-        <div>
-          <button> voltar</button>
-          <button>
+        <div className="w-full h-fit flex justify-evenly items-center mt-5">
+          <button
+            disabled={page === 1}
+            className={`font-bold bg-buttonBg p-2 w-16 color-font rounded-2xl`}
+          >
             {' '}
-            <ArrowRight size={32} />{' '}
+            voltar
+          </button>
+          <button className="font-bold bg-buttonBg p-2 w-16 color-font rounded-2xl flex justify-center cursor-pointer">
+            {' '}
+            <ArrowRight size={20} />{' '}
           </button>
         </div>
       </form>
