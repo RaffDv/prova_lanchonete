@@ -3,44 +3,47 @@ import Image from 'next/image'
 import logo from '@/image/logo.jpg'
 import DefaultInput from '../defaultComponents/DefaultInput'
 import { useEffect, useState } from 'react'
-import { loginType } from './../../../../local/types/global'
+import { AccountType } from './../../../../local/types/global'
 import { ArrowRight } from '@phosphor-icons/react'
 
 export default function RegisterForm() {
-  const [formData, setFormData] = useState<loginType>({
-    email: '',
-    pass: ['', ''],
-    passIsEqual: false,
-    user: '',
-    city: '',
-    complement: '',
-    country: '',
-    neighborhood: '',
-    state: '',
-    street: '',
+  const [AccountData, setAccountData] = useState<AccountType>({
+    AddresData: {
+      city: '',
+      complement: '',
+      country: '',
+      neighborhood: '',
+      state: '',
+      street: '',
+    },
+    UserData: {
+      email: '',
+      pass: ['', ''],
+      passIsEqual: false,
+      user: '',
+    },
   })
   const [page, setPage] = useState<number>(1)
 
   const handeVerifyPass = () => {
-    if (formData.pass[0] === formData.pass[1]) {
-      const ns = { ...formData }
-      ns.passIsEqual = true
+    if (AccountData.UserData.pass[0] === AccountData.UserData.pass[1]) {
+      const ns = { ...AccountData }
+      ns.UserData.passIsEqual = true
       console.log('senha igual')
       console.log(ns)
-      setFormData(ns)
+      setAccountData(ns)
     } else {
-      console.log('senha diferente || senha ', formData.pass)
-      const ns = { ...formData }
-      ns.passIsEqual = false
-      setFormData(ns)
+      const ns = { ...AccountData }
+      ns.UserData.passIsEqual = false
+      setAccountData(ns)
     }
   }
 
   useEffect(() => {
-    if (formData.pass[0] !== '') {
+    if (AccountData.UserData.pass[0] !== '') {
       handeVerifyPass()
     }
-  }, [formData.pass[1]])
+  }, [AccountData.UserData.pass[1]])
 
   return (
     <section className="w-full h-full flex flex-col justify-center items-center p-4 transition-all duration-300">
@@ -76,10 +79,12 @@ export default function RegisterForm() {
               placeholder="Usuário"
               type="text"
               required
-              value={formData.user}
-              onchange={(e) =>
-                setFormData({ ...formData, user: e.target.value })
-              }
+              value={AccountData.UserData.user}
+              onchange={(e) => {
+                const ns = { ...AccountData }
+                ns.UserData.user = e.target.value
+                setAccountData(ns)
+              }}
             />
             <DefaultInput
               id="email"
@@ -87,10 +92,12 @@ export default function RegisterForm() {
               type="email"
               placeholder="email@email.com"
               required
-              onchange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-              value={formData.email}
+              onchange={(e) => {
+                const ns = { ...AccountData }
+                ns.UserData.user = e.target.value
+                setAccountData(ns)
+              }}
+              value={AccountData.UserData.email}
             />
 
             <DefaultInput
@@ -100,11 +107,11 @@ export default function RegisterForm() {
               placeholder="Senha"
               required
               onchange={(e) => {
-                const ns = { ...formData }
-                ns.pass[0] = e.target.value
-                setFormData(ns)
+                const ns = { ...AccountData }
+                ns.UserData.pass[0] = e.target.value
+                setAccountData(ns)
               }}
-              value={formData.pass[0]}
+              value={AccountData.UserData.pass[0]}
             />
 
             <DefaultInput
@@ -115,11 +122,11 @@ export default function RegisterForm() {
               required
               onchange={(e) => {
                 console.log(e.target.value)
-                const ns = { ...formData }
-                ns.pass[1] = e.target.value
-                setFormData(ns)
+                const ns = { ...AccountData }
+                ns.UserData.pass[1] = e.target.value
+                setAccountData(ns)
               }}
-              value={formData.pass[1]}
+              value={AccountData.UserData.pass[1]}
             />
           </>
         )}
@@ -131,19 +138,22 @@ export default function RegisterForm() {
               name="country"
               placeholder="País"
               type="text"
-              value={formData.country}
+              value={AccountData.AddresData.country}
               required
-              onchange={(e) =>
-                setFormData({ ...formData, country: e.target.value })
-              }
+              onchange={(e) => {
+                const ns = { ...AccountData }
+                ns.AddresData.country = e.target.value
+                setAccountData(ns)
+              }}
             />
           </>
         )}
-        {!formData.passIsEqual && formData.pass[1] !== '' && (
-          <span className="text-red-600 leading-relaxed text-sm underline ">
-            As senhas não conferem!
-          </span>
-        )}
+        {!AccountData.UserData.passIsEqual &&
+          AccountData.UserData.pass[1] !== '' && (
+            <span className="text-red-600 leading-relaxed text-sm underline ">
+              As senhas não conferem!
+            </span>
+          )}
 
         {/* buttons */}
         <div className="w-full h-fit flex justify-evenly items-center mt-5">
@@ -156,7 +166,7 @@ export default function RegisterForm() {
             voltar
           </button>
           <button
-            disabled={!formData.passIsEqual}
+            disabled={!AccountData.UserData.passIsEqual}
             className={`font-bold bg-buttonBg p-2  color-font rounded-2xl flex justify-center ${
               page === 2 ? 'w-fit' : 'w-16'
             }`}
