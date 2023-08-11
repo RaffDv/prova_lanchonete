@@ -14,6 +14,8 @@ const config: Config = {
         inputBg: '#CDE9E9',
         buttonBg: '#6BB7FE',
         font: '#514E66',
+        dot: '#5C9EDB',
+        off: '#A2C3E1',
       },
     },
   },
