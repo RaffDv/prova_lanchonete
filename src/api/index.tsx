@@ -133,4 +133,9 @@ export default {
       return await basicFetch('GET', 'somenting.php', {})
     },
   },
+  food: {
+    get: async (): Promise<resultType<{ data: string }>> => {
+      return await basicFetch('GET', 'api/food/get.php', {})
+    },
+  },
 }
