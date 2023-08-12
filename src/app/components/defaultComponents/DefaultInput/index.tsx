@@ -8,14 +8,16 @@ export default function DefaultInput({
   required,
   onchange,
   value,
+  className,
 }: {
   type: string
   name: string
   id: string
   placeholder: string
   required?: boolean
-  value: string
+  value?: string
   onchange: (e: ChangeEvent<HTMLInputElement>) => void
+  className?: string
 }) {
   return (
     <input
@@ -24,7 +26,7 @@ export default function DefaultInput({
       id={id}
       placeholder={placeholder}
       required={!!required}
-      className="border rounded-full bg-inputBg p-2"
+      className={`${className} border rounded-full bg-inputBg p-2`}
       onChange={onchange}
       value={value}
     />
