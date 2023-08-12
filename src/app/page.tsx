@@ -1,7 +1,16 @@
-// import Base from './components/Base'
-// import Car from './components/Car'
+'use client'
+
+import api from '@/api'
+import { useEffect } from 'react'
 
 export default function Home() {
+  const ttest = async () => {
+    const r = await api.general.testConn()
+    console.log(r)
+  }
+  useEffect(() => {
+    ttest()
+  }, [])
   return (
     <main className="flex w-full h-full flex-col items-center justify-between ">
       <div className="flex w-full  flex-col">
