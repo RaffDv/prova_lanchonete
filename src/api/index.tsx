@@ -14,7 +14,7 @@ import axios from 'axios'
 
 const api = axios.create({
   withCredentials: true,
-  baseURL: `http://localhost:4000`,
+  baseURL: `http://localhost:4000/api`,
 })
 
 /**
@@ -136,6 +136,17 @@ export default {
   food: {
     get: async (): Promise<resultType<{ data: string }>> => {
       return await basicFetch('GET', 'api/food/get.php', {})
+    },
+  },
+  user: {
+    login: async ({
+      email,
+      pass,
+    }: {
+      email: string
+      pass: string
+    }): Promise<resultType<{ token: string }>> => {
+      return await basicFetch('POST', '/user/login', { data: { email, pass } })
     },
   },
 }
