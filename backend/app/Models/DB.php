@@ -73,7 +73,6 @@ class BD
     {
         try {
             $sql = "SELECT {$fields['fields']} from {$table}";
-    
             if (!empty($filter)) {
                 $whereConditions = [];
                 foreach ($filter as $field => $value) {
@@ -96,6 +95,8 @@ class BD
     public function update_sql(string $table,$token,$data=[])
     {
         $decoded =  \Models\JWTProvider::decode_token($token);
+        $filter = ["email" =>$decoded->email];
+        $userID = $this->select_sql($table,['fields' => 'id'],$filter);
         try {
             $sql = "UPDATE {$table}";
 
@@ -107,12 +108,11 @@ class BD
                 $sql .=" SET".implode(",", $whereConditions);
             }
 
-            if (isset($decoded->id)) {
+            if (isset($userID[0])) {
                 
                 $sql .= " WHERE id = :id"; 
-                $data['id'] = $decoded->id;
+                $data['id'] = $userID[0]['id'];
             }
-
             $r = $this->safeQuery($sql,$data);
             if($r) return true;
             return false;

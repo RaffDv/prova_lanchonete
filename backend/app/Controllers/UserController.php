@@ -74,16 +74,16 @@ class UserController{
         $r = $this->db->update_sql('users',$token,$values);
         if($r)
         {
-            $this->msg= 'sucess to update';
+            $this->msg= ['msg'=>'sucess to update'];
             $this->status = 200;
         }
         else
         {
 
-            $this->msg= 'fail to update';
+            $this->msg= ['msg'=>'fail to update'];
             $this->status = 422;
         }
-        $response->getBody()->write($this->msg);
+        $response->getBody()->write(json_encode($this->msg));
         return $response->withStatus($this->status);
     }
 
