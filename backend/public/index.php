@@ -1,10 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: localhost:3000");
-header("Access-Control-Allow-Headers: Content-Type, X-Requested-With");
-header("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE");
-header("Access-Control-Allow-Credentials: true");
 
-// imports
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -22,6 +17,21 @@ $app = AppFactory::create();
 $app->get('/', function (Request $request, Response $response, $args) {
     $response->getBody()->write("Hello world!");
     return $response;
+});
+
+$app->options('/{routes:.+}', function ($request, $response, $args) {
+    return $response;
+});
+
+$app->add(function ($request, $handler) {
+    $response = $handler->handle($request);
+    return $response
+            ->withHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
+            ->withHeader('Access-Control-Allow-Credentials', 'true')
+            ->withHeader('Access-Control-Allow-Headers','Authorization')
+            ->withHeader('Access-Control-Expose-Headers','Authorization')
+            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
 
 $app->group('/api', function (RouteCollectorProxy $api)

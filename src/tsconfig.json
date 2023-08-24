@@ -32,6 +32,9 @@
       ],
       "@/types": [
         "./../../local/types"
+      ],
+      "@/schemas": [
+        "./schemas"
       ]
     }
   },

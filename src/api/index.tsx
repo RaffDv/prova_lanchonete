@@ -23,13 +23,19 @@ const api = axios.create({
  * @param params
  * @returns Fetch
  */
-const simpleBasicFetch = async (endpoint: string, params: string) => {
+const simpleBasicFetch = async (
+  endpoint: string,
+  params: string,
+  headers: object,
+) => {
   let str = `/${endpoint}`
   if (params !== '') {
     str = `${str}?${params}`
   }
 
-  return await api.get(str)
+  return await api.get(str, {
+    headers,
+  })
 }
 
 type resultType<T> = {
@@ -38,12 +44,14 @@ type resultType<T> = {
   success: boolean
   data: T
   msg: string
+  auth: string
 }
 
 const basicFetch = async (
   method: string,
   endpoint: string,
   params: object,
+  headers: object,
   alertConex?: boolean,
   alertError?: boolean,
 ): Promise<resultType<any>> => {
@@ -53,27 +61,30 @@ const basicFetch = async (
     success: false, // Setado em true quando tudo dá certo e status de retorno é 10
     data: false, // Conteúdo JSON recebido do servidor
     msg: '', // Inserido no Front -> Codigo de status que diz o que será carregado pra lá.
+    auth: '',
   }
   try {
     let r: any = false
     try {
       r =
         method === 'POST'
-          ? await api.post(`/${endpoint}/`, buildParamString(params), {
+          ? await api.post(`/${endpoint}`, buildParamString(params), {
               validateStatus: function (status) {
                 return true
               },
+              headers,
             })
           : method === 'GET'
-          ? await simpleBasicFetch(endpoint, buildParamString(params))
+          ? await simpleBasicFetch(endpoint, buildParamString(params), headers)
           : false
     } catch (e: any) {
       r = e.response
     }
-    console.log('API_R: ', r)
+    // console.log('API_R: ', r)
     if (r) {
       result.reqStat = r.status
       result.success = r.status === 200 || r.status === 201
+      result.auth = r.headers.authorization ? r.headers.authorization : ''
       if (r.data) result.data = r.data
       const msg = typeof r.data.msg === 'undefined' ? '' : r.data.msg // `stat_${r.status}`;
       if (msg) result.msg = msg
@@ -126,16 +137,10 @@ const buildParamString = (params: any) => {
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
-  general: {
-    testConn: async (): Promise<resultType<string>> => {
-      console.log('executou o teste')
-
-      return await basicFetch('GET', 'somenting.php', {})
-    },
-  },
+  general: {},
   food: {
     get: async (): Promise<resultType<{ data: string }>> => {
-      return await basicFetch('GET', 'api/food/get.php', {})
+      return await basicFetch('GET', 'api/food/get.php', {}, {})
     },
   },
   user: {
@@ -146,7 +151,14 @@ export default {
       email: string
       pass: string
     }): Promise<resultType<{ token: string }>> => {
-      return await basicFetch('POST', '/user/login', { data: { email, pass } })
+      return await basicFetch(
+        'POST',
+        'user/login',
+        {
+          data: { email, pass },
+        },
+        {},
+      )
     },
   },
 }

@@ -16,13 +16,13 @@ class JWTProvider
         ];
         $payload = array_merge($payload,$data);
         $jwt = JWT::encode($payload, self::$key, 'HS256');
-        return $jwt;
+        return base64_encode($jwt);
 
     }
 
     public static function decode_token($token) {
-        
-        $decoded = JWT::decode($token, new Key(self::$key, 'HS256'));
+        $jwt = base64_decode($token);
+        $decoded = JWT::decode($jwt, new Key(self::$key, 'HS256'));
         return $decoded;
     }
 

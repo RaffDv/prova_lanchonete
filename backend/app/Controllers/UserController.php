@@ -1,6 +1,5 @@
 <?php
 namespace App\Controllers;
-
 require_once __DIR__.'/../../vendor/autoload.php';
 
 use Exception;
@@ -9,11 +8,14 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class UserController{
     private $msg,$status;
-    public  \Models\BD $db;
+    public  \Models\BD | null $db = null;
 
     public function get(Request $request, Response $response){
         
         $this->loadDB();
+        $header = $request->getHeaders();
+        print_r($header);
+    
         
         $filter = $request->getQueryParams();
         $data = $this->db->select_sql('users', ['fields' => '*'], $filter);
@@ -100,11 +102,12 @@ class UserController{
             $jwt = \Models\JWTProvider::encode_token($r[0]);
             $jwt = ['token' => $jwt];
             $this->status = 200;
-            $this->msg = json_encode($jwt);
-        } catch (\Throwable $th) {
+            $this->msg = json_encode(['msg'=>'success to generate token']);
+        } catch (Exception $e) {
             $this->status = 422;
-            $this->msg = 'Unprocessble data';
+            $this->msg = 'Error:    '.$e->getMessage();
         }
+        $response = $response->withHeader('Authorization', "Bearer {$jwt['token']}");
         
         $response->getBody()->write($this->msg);
         return $response->withStatus($this->status);
@@ -113,7 +116,9 @@ class UserController{
 
     private function loadDB()
     {
-        $this->db = \Models\BD::getInstance();
+        if($this->db == null){
+            $this->db = \Models\BD::getInstance();
+        }
     }
 
 }

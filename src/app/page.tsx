@@ -5,7 +5,10 @@ import { useEffect } from 'react'
 
 export default function Home() {
   const ttest = async () => {
-    const r = await api.general.testConn()
+    const r = await api.user.login({
+      email: 'raff@gmail.com',
+      pass: 'senha123',
+    })
     console.log(r)
   }
   useEffect(() => {
