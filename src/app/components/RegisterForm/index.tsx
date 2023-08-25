@@ -1,50 +1,67 @@
+/* eslint-disable no-useless-return */
 'use client'
 import Image from 'next/image'
 import logo from '@/image/logo.jpg'
-import DefaultInput from '../defaultComponents/DefaultInput'
-import { useEffect, useState } from 'react'
-import { AccountType } from './../../../../local/types/global'
+import { useContext, useState } from 'react'
 import { ArrowRight } from '@phosphor-icons/react'
-
+import { AccountSchema } from '@/schemas/global'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import Error from '../defaultComponents/Error'
+import api from '@/api'
+import { AuthContext } from '@/contexts/user/auth'
+export type formProps = z.infer<typeof AccountSchema>
 export default function RegisterForm() {
-  const [AccountData, setAccountData] = useState<AccountType>({
-    AddresData: {
-      city: '',
-      complement: '',
-      country: '',
-      neighborhood: '',
-      state: '',
-      street: '',
-    },
-    UserData: {
-      email: '',
-      pass: ['', ''],
-      passIsEqual: false,
-      user: '',
+  const {
+    handleSubmit,
+    register,
+    watch,
+    formState: { errors },
+  } = useForm<formProps>({
+    criteriaMode: 'all',
+    mode: 'all',
+    resolver: zodResolver(AccountSchema),
+    defaultValues: {
+      account: {
+        email: '',
+        pass: '',
+        passConf: '',
+        user: '',
+      },
     },
   })
+
+  const { login } = useContext(AuthContext)
+
   const [page, setPage] = useState<number>(1)
 
-  const handeVerifyPass = () => {
-    if (AccountData.UserData.pass[0] === AccountData.UserData.pass[1]) {
-      const ns = { ...AccountData }
-      ns.UserData.passIsEqual = true
-      setAccountData(ns)
-    } else {
-      const ns = { ...AccountData }
-      ns.UserData.passIsEqual = false
-      setAccountData(ns)
+  const handleFormSubmit = async (data: formProps) => {
+    if (page === 1) return
+    delete data.account.passConf
+
+    const r = await api.user.new({
+      account: data.account,
+      address: data.address,
+    })
+    if (r.data.success) {
+      const email = watch('account.email')
+      const pass = watch('account.pass')
+
+      login({ email, pass })
     }
+    /**
+     * new(data)
+     * ->boolean (success or fail)
+     * ->fail: error in display
+     * ->succes: login function ( context )
+     */
+
+    // chamar login
   }
 
-  useEffect(() => {
-    if (AccountData.UserData.pass[0] !== '') {
-      handeVerifyPass()
-    }
-  }, [AccountData.UserData.pass[1], AccountData.UserData.pass[0]])
-
   return (
-    <section className="w-full h-full flex flex-col justify-center items-center p-4 transition-all duration-300">
+    <section className="w-full h-full flex flex-col justify-center items-center p-4 ">
       <header className="w-full flex flex-col items-center space-y-2">
         <Image src={logo} alt="logo" width={80} height={80} />
         <h2 className="text-main font-bold leading-relaxed mx-4 text-2xl">
@@ -65,171 +82,108 @@ export default function RegisterForm() {
         </div>
       </header>
       <form
-        className={`w-full flex flex-col relative items-center gap-2 transition-all duration-300`}
-        onSubmit={(e) => e.preventDefault()}
+        className={`w-full flex flex-col relative items-center gap-2 `}
+        onSubmit={handleSubmit(handleFormSubmit)}
       >
         {/* page 1 */}
 
-        <div
-          className={`w-full flex flex-col relative items-center transition-all duration-300 gap-2 ${
-            page !== 1 && 'opacity-0 hidden'
-          }`}
-        >
-          <DefaultInput
-            id="username"
-            name="username"
-            placeholder="Usuário"
-            type="text"
-            required
-            value={AccountData.UserData.user}
-            onchange={(e) => {
-              const ns = { ...AccountData }
-              ns.UserData.user = e.target.value
-              setAccountData(ns)
-            }}
-          />
-          <DefaultInput
-            id="email"
-            name="email"
-            type="email"
-            placeholder="email@email.com"
-            required
-            onchange={(e) => {
-              const ns = { ...AccountData }
-              ns.UserData.email = e.target.value
-              setAccountData(ns)
-            }}
-            value={AccountData.UserData.email}
-          />
-
-          <DefaultInput
-            id="password"
-            name="password"
-            type="text"
-            placeholder="Senha"
-            required
-            onchange={(e) => {
-              const ns = { ...AccountData }
-              ns.UserData.pass[0] = e.target.value
-              setAccountData(ns)
-            }}
-            value={AccountData.UserData.pass[0]}
-          />
-
-          <DefaultInput
-            id="passwordConf"
-            name="passwordConf"
-            type="text"
-            placeholder="Confirme sua senha"
-            required
-            onchange={(e) => {
-              console.log(e.target.value)
-              const ns = { ...AccountData }
-              ns.UserData.pass[1] = e.target.value
-              setAccountData(ns)
-            }}
-            value={AccountData.UserData.pass[1]}
-          />
-        </div>
-
-        {/* page 2 */}
-
-        <div
-          className={`w-full flex flex-col relative items-center transition-all duration-300 gap-2 max-w-[270px] ${
-            page !== 2 && 'opacity-0 hidden'
-          }`}
-        >
-          <DefaultInput
-            id="country"
-            name="country"
-            placeholder="País"
-            type="text"
-            value={AccountData.AddresData.country}
-            onchange={(e) => {
-              const ns = { ...AccountData }
-              ns.AddresData.country = e.target.value
-              setAccountData(ns)
-            }}
-          />
-
-          <DefaultInput
-            id="state"
-            name="state"
-            placeholder="Estado"
-            type="text"
-            value={AccountData.AddresData.state}
-            onchange={(e) => {
-              const ns = { ...AccountData }
-              ns.AddresData.state = e.target.value
-              setAccountData(ns)
-            }}
-          />
-          <DefaultInput
-            id="city"
-            name="city"
-            placeholder="Cidade"
-            type="text"
-            value={AccountData.AddresData.city}
-            onchange={(e) => {
-              const ns = { ...AccountData }
-              ns.AddresData.city = e.target.value
-              setAccountData(ns)
-            }}
-          />
-
-          <DefaultInput
-            id="neighborhood"
-            name="neighborhood"
-            placeholder="Bairro"
-            type="text"
-            value={AccountData.AddresData.neighborhood}
-            onchange={(e) => {
-              const ns = { ...AccountData }
-              ns.AddresData.neighborhood = e.target.value
-              setAccountData(ns)
-            }}
-          />
-
-          <div className="flex float-left w-full">
-            <DefaultInput
-              className="border-none rounded-l-full rounded-none w-[200px]"
-              id="street"
-              name="street"
-              placeholder="Rua"
+        {page === 1 && (
+          <>
+            <input
+              {...register('account.user')}
               type="text"
-              value={AccountData.AddresData.street}
-              onchange={(e) => {
-                const ns = { ...AccountData }
-                ns.AddresData.street = e.target.value
-                setAccountData(ns)
-              }}
+              className="border rounded-full bg-inputBg p-2"
+              placeholder="Nome completo"
             />
-            <DefaultInput
-              className="border-none rounded-r-full rounded-none w-[70px]"
-              id="state"
-              name="state"
-              placeholder="Num"
-              type="text"
-              onchange={(e) => {
-                const ns = { ...AccountData }
-                ns.AddresData.state += `,${e.target.value}`
-                setAccountData(ns)
-              }}
-            />
-          </div>
-        </div>
+            <Error msg={errors.account?.user?.message} size="normal" />
 
-        <span
-          className={`text-red-600 leading-relaxed text-sm underline transition-all duration-300 opacity-0 ${
-            !AccountData.UserData.passIsEqual &&
-            AccountData.UserData.pass[1] !== '' &&
-            'visible opacity-100 inline-flex '
-          }
-          ${page !== 1 && 'hidden'}
-          `}
-        >
-          As senhas não conferem!
-        </span>
+            <input
+              {...register('account.email')}
+              type="text"
+              className="border rounded-full bg-inputBg p-2"
+              placeholder="Email"
+            />
+            <Error msg={errors.account?.email?.message} size="normal" />
+
+            <input
+              {...register('account.pass')}
+              type="text"
+              className="border rounded-full bg-inputBg p-2"
+              placeholder="Senha"
+            />
+            <Error msg={errors.account?.pass?.message} size="normal" />
+
+            <input
+              {...register('account.passConf')}
+              type="text"
+              className="border rounded-full bg-inputBg p-2"
+              placeholder="Confirme  a senha"
+            />
+            <Error msg={errors.account?.passConf?.message} size="normal" />
+
+            <Error
+              size={errors.account?.root?.message ? 'normal' : 'default'}
+              msg={errors.account?.root?.message}
+            />
+          </>
+        )}
+
+        {page === 2 && (
+          <>
+            <input
+              type="text"
+              placeholder="País"
+              {...register('address.country')}
+              className="border rounded-full bg-inputBg p-2"
+            />
+            <Error msg={errors.address?.country?.message} />
+            <input
+              placeholder="Estado"
+              type="text"
+              {...register('address.state')}
+              className="border rounded-full bg-inputBg p-2"
+            />
+            <Error msg={errors.address?.state?.message} />
+
+            <input
+              placeholder="Cidade"
+              type="text"
+              {...register('address.city')}
+              className="border rounded-full bg-inputBg p-2"
+            />
+            <Error msg={errors.address?.city?.message} />
+
+            <input
+              placeholder="Bairro"
+              type="text"
+              {...register('address.district')}
+              className="border rounded-full bg-inputBg p-2"
+            />
+            <Error msg={errors.address?.district?.message} />
+
+            <div className=" flex max-w-[270px] relative">
+              <div>
+                <input
+                  placeholder="Rua"
+                  type="text"
+                  {...register('address.street')}
+                  className="border rounded-full bg-inputBg p-2 float-left rounded-r-none w-[200px]"
+                />
+                <Error msg={errors.address?.street?.message} />
+              </div>
+
+              <div>
+                <input
+                  placeholder="Num"
+                  type="number"
+                  {...register('address.num')}
+                  className="border rounded-full bg-inputBg p-2 rounded-l-none w-[70px]"
+                />
+                <Error msg={errors.address?.num?.message} />
+              </div>
+            </div>
+          </>
+        )}
 
         {/* buttons */}
         <div className="w-full h-fit flex justify-evenly items-center mt-5">
@@ -242,15 +196,14 @@ export default function RegisterForm() {
             voltar
           </button>
           <button
-            disabled={
-              !AccountData.UserData.passIsEqual ||
-              AccountData.UserData.user === '' ||
-              AccountData.UserData.email === ''
-            }
             className={`font-semibold bg-buttonBg p-2  color-font rounded-2xl flex justify-center ${
               page === 2 ? 'w-fit' : 'w-16'
             }`}
-            onClick={() => setPage(2)}
+            onClick={() => {
+              if (page === 1) {
+                setPage(2)
+              }
+            }}
           >
             {page === 1 ? <ArrowRight size={20} /> : 'Enviar'}
           </button>
