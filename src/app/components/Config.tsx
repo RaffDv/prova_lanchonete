@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import config from './img/config.svg'
+import config from '@/image/config.svg'
 export default function Config() {
   return (
     <main className="flex h-8 justify-center ">

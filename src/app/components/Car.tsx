@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import car from './img/carrinho.svg'
+import car from '@/image/carrinho.svg'
 export default function Car() {
   return (
     <main className="flex h-8 justify-center ">
