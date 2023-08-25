@@ -14,10 +14,6 @@ use Slim\Routing\RouteCollectorProxy;
 
 $app = AppFactory::create();
 
-$app->get('/', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("Hello world!");
-    return $response;
-});
 
 $app->options('/{routes:.+}', function ($request, $response, $args) {
     return $response;
@@ -26,13 +22,19 @@ $app->options('/{routes:.+}', function ($request, $response, $args) {
 $app->add(function ($request, $handler) {
     $response = $handler->handle($request);
     return $response
-            ->withHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
-            ->withHeader('Access-Control-Allow-Credentials', 'true')
-            ->withHeader('Access-Control-Allow-Headers','Authorization')
-            ->withHeader('Access-Control-Expose-Headers','Authorization')
-            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    ->withHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
+    ->withHeader('Access-Control-Allow-Credentials', 'true')
+    ->withHeader('Access-Control-Expose-Headers','Authorization')
+    ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+    ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
+$app->get('/', function (Request $request, Response $response, $args) {
+    $response->getBody()->write("Hello world!");
+    return $response;
+});
+
+
+
 
 $app->group('/api', function (RouteCollectorProxy $api)
 {

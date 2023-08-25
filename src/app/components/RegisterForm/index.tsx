@@ -1,18 +1,22 @@
+/* eslint-disable no-useless-return */
 'use client'
 import Image from 'next/image'
 import logo from '@/image/logo.jpg'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { ArrowRight } from '@phosphor-icons/react'
 import { AccountSchema } from '@/schemas/global'
-import Balancer from 'react-wrap-balancer'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-type formProps = z.infer<typeof AccountSchema>
+import Error from '../defaultComponents/Error'
+import api from '@/api'
+import { AuthContext } from '@/contexts/user/auth'
+export type formProps = z.infer<typeof AccountSchema>
 export default function RegisterForm() {
   const {
     handleSubmit,
     register,
+    watch,
     formState: { errors },
   } = useForm<formProps>({
     criteriaMode: 'all',
@@ -28,12 +32,33 @@ export default function RegisterForm() {
     },
   })
 
+  const { login } = useContext(AuthContext)
+
   const [page, setPage] = useState<number>(1)
 
-  const handleFormSubmit = (data: formProps) => {
-    console.log(data)
+  const handleFormSubmit = async (data: formProps) => {
+    if (page === 1) return
+    delete data.account.passConf
+
+    const r = await api.user.new({
+      account: data.account,
+      address: data.address,
+    })
+    if (r.data.success) {
+      const email = watch('account.email')
+      const pass = watch('account.pass')
+
+      login({ email, pass })
+    }
+    /**
+     * new(data)
+     * ->boolean (success or fail)
+     * ->fail: error in display
+     * ->succes: login function ( context )
+     */
+
+    // chamar login
   }
-  console.log(errors)
 
   return (
     <section className="w-full h-full flex flex-col justify-center items-center p-4 ">
@@ -70,48 +95,36 @@ export default function RegisterForm() {
               className="border rounded-full bg-inputBg p-2"
               placeholder="Nome completo"
             />
-            {errors.account?.user?.message && (
-              <Balancer className="max-w-[80%] text-xs text-red-600/90 w-fit ">
-                {errors.account.user.message}
-              </Balancer>
-            )}
+            <Error msg={errors.account?.user?.message} size="normal" />
+
             <input
               {...register('account.email')}
               type="text"
               className="border rounded-full bg-inputBg p-2"
               placeholder="Email"
             />
-            {errors.account?.email?.message && (
-              <Balancer className="max-w-[80%] text-xs text-red-600/90 w-fit ">
-                {errors.account.email.message}
-              </Balancer>
-            )}
+            <Error msg={errors.account?.email?.message} size="normal" />
+
             <input
               {...register('account.pass')}
               type="text"
               className="border rounded-full bg-inputBg p-2"
               placeholder="Senha"
             />
-            {errors.account?.pass?.message && (
-              <Balancer className="max-w-[80%] text-xs text-red-600/90 w-fit ">
-                {errors.account.pass.message}
-              </Balancer>
-            )}
+            <Error msg={errors.account?.pass?.message} size="normal" />
+
             <input
               {...register('account.passConf')}
               type="text"
               className="border rounded-full bg-inputBg p-2"
               placeholder="Confirme  a senha"
             />
-            {errors.account?.passConf?.message && (
-              <Balancer className="max-w-[80%] text-xs text-red-600/90 w-fit ">
-                {errors.account.passConf.message}
-              </Balancer>
-            )}
+            <Error msg={errors.account?.passConf?.message} size="normal" />
 
-            <Balancer className="max-w-[80%] text-xs text-red-600/90 w-fit transition-all duration-300  ">
-              {errors.account?.root?.message}
-            </Balancer>
+            <Error
+              size={errors.account?.root?.message ? 'normal' : 'default'}
+              msg={errors.account?.root?.message}
+            />
           </>
         )}
 
@@ -119,36 +132,55 @@ export default function RegisterForm() {
           <>
             <input
               type="text"
+              placeholder="País"
               {...register('address.country')}
               className="border rounded-full bg-inputBg p-2"
             />
+            <Error msg={errors.address?.country?.message} />
             <input
+              placeholder="Estado"
               type="text"
               {...register('address.state')}
               className="border rounded-full bg-inputBg p-2"
             />
+            <Error msg={errors.address?.state?.message} />
+
             <input
+              placeholder="Cidade"
               type="text"
               {...register('address.city')}
               className="border rounded-full bg-inputBg p-2"
             />
+            <Error msg={errors.address?.city?.message} />
+
             <input
+              placeholder="Bairro"
               type="text"
               {...register('address.district')}
               className="border rounded-full bg-inputBg p-2"
             />
+            <Error msg={errors.address?.district?.message} />
 
             <div className=" flex max-w-[270px] relative">
-              <input
-                type="text"
-                {...register('address.street')}
-                className="border rounded-full bg-inputBg p-2 float-left rounded-r-none w-[200px]"
-              />
-              <input
-                type="number"
-                {...register('address.num')}
-                className="border rounded-full bg-inputBg p-2 rounded-l-none w-[70px]"
-              />
+              <div>
+                <input
+                  placeholder="Rua"
+                  type="text"
+                  {...register('address.street')}
+                  className="border rounded-full bg-inputBg p-2 float-left rounded-r-none w-[200px]"
+                />
+                <Error msg={errors.address?.street?.message} />
+              </div>
+
+              <div>
+                <input
+                  placeholder="Num"
+                  type="number"
+                  {...register('address.num')}
+                  className="border rounded-full bg-inputBg p-2 rounded-l-none w-[70px]"
+                />
+                <Error msg={errors.address?.num?.message} />
+              </div>
             </div>
           </>
         )}

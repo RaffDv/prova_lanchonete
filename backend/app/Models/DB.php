@@ -43,10 +43,18 @@ class BD
 
 
 
-    public function insert_sql(string $table,array $fields, array $values=[])
+    public function insert_sql(string $table, array $values=[])
     {
         try {
-            $sql = "INSERT INTO {$table}({$fields['fields']}) VALUES ";
+            $sql = "INSERT INTO {$table} ";
+            if (!empty($values)) {
+                $whereConditions = [];
+                foreach ($values as $field => $value) {
+                    $whereConditions[] = "$field";
+                }
+                $sql .= '(' . implode(",", $whereConditions) . ') VALUES ';
+            }
+
     
             if (!empty($values)) {
                 $whereConditions = [];
@@ -55,8 +63,9 @@ class BD
                 }
                 $sql .= '(' . implode(",", $whereConditions) . ')';
             }
+
     
-            $r = $this->safeQuery($sql, $values,2);
+            $r = $this->safeQuery($sql, $values);
             if($r){
                 return true;
             }
@@ -80,7 +89,7 @@ class BD
                 }
                 $sql .= " WHERE " . implode(" AND ", $whereConditions);
             }
-    
+            
             $r = $this->safeQuery($sql, $filter,2);
             
             if($r){

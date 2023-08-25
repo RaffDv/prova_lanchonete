@@ -16,7 +16,12 @@ export function middleware(request: NextRequest) {
       },
     })
   }
+
+  // admin
+  if (path.endsWith('/food/new')) {
+    // pensar em como redirecionar sem ser adm
+  }
 }
 export const config = {
-  matcher: ['/API/user/:path*', '/user/:path*'],
+  matcher: ['/API/user/:path*', '/user/:path*', '/_admin/:path*'],
 }

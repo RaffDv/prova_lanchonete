@@ -44,20 +44,22 @@ class UserController{
 
     public function new(Request $request, Response $response, array $args) {
         $this->loadDB();
-        $this->status = 500;
+        $this->status = 200;
         $values = $request->getParsedBody();
-        $values = json_decode($values['data'],true);
-        $data = $this->db->insert_sql('users',['fields'=>'name,email,pass'],$values);
+        $acc = json_decode($values['account'],true);
+        $add = json_decode($values['address'],true);
+        $values = array_merge($acc,$add);
+        $data = $this->db->insert_sql('users',$values);
         if($data)
         {
             $this->status = 200;
-            $this->msg = ['msg' => 'sucess to insert in DB'];
+            $this->msg = ['success' => true];
             
         }
         else
         {
             $this->status = 409;
-            $this->msg = ['msg' => 'fail to insert in DB'];
+            $this->msg = ['success' => false];
         }
         $response->getBody()->write(json_encode($this->msg));
         return $response->withStatus($this->status);
@@ -94,11 +96,11 @@ class UserController{
 
 
         $this->status=500;
-        $data = $request->getParsedBody();
-        $data = json_decode($data['data'],true);
-
+        $body = $request->getParsedBody();
+        $data = json_decode($body['data'],true);
         try {
-            $r =$this->db->select_sql('users',['fields' => 'name,email'],$data);
+            
+            $r =$this->db->select_sql('users',['fields' => 'user,email'],$data);
             $jwt = \Models\JWTProvider::encode_token($r[0]);
             $jwt = ['token' => $jwt];
             $this->status = 200;

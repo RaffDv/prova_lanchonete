@@ -5,7 +5,7 @@ import api from '@/api'
 import { useRouter } from 'next/navigation'
 
 type AuthContextProps = {
-  user: AuthUserType | null
+  userState: AuthUserType | null
   login: (user: AuthUserType) => void
   logout: () => void
 }
@@ -13,16 +13,18 @@ type AuthContextProps = {
 const AuthContext = createContext<AuthContextProps>({} as AuthContextProps)
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()
-  const [user, setUser] = useState<AuthUserType>({
+  const [userState, setUserState] = useState<AuthUserType>({
     email: '',
     pass: '',
   })
 
   const login = async (user: AuthUserType) => {
-    setUser(user)
+    setUserState(user)
+
     let token = ''
     const r = await api.user.login({ ...user })
     if (r.success) {
+      console.log(r)
       token = r.auth.split(' ')[1]
 
       router.push(`/API/user/login?token=${token}`)
@@ -34,7 +36,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ userState, login, logout }}>
       <>{children}</>
     </AuthContext.Provider>
   )

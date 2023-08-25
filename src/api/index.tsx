@@ -10,6 +10,7 @@
  * OBS: This file is modified and refactored by RaffDv
  */
 
+import { newUserType } from '@/schemas/global'
 import axios from 'axios'
 
 const api = axios.create({
@@ -80,11 +81,14 @@ const basicFetch = async (
     } catch (e: any) {
       r = e.response
     }
-    // console.log('API_R: ', r)
+    console.log('API_R: ', r)
     if (r) {
       result.reqStat = r.status
       result.success = r.status === 200 || r.status === 201
-      result.auth = r.headers.authorization ? r.headers.authorization : ''
+
+      result.auth = r.headers
+        ? r.headers.authorization
+        : r.headers.authorization
       if (r.data) result.data = r.data
       const msg = typeof r.data.msg === 'undefined' ? '' : r.data.msg // `stat_${r.status}`;
       if (msg) result.msg = msg
@@ -138,11 +142,7 @@ const buildParamString = (params: any) => {
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   general: {},
-  food: {
-    get: async (): Promise<resultType<{ data: string }>> => {
-      return await basicFetch('GET', 'api/food/get.php', {}, {})
-    },
-  },
+  food: {},
   user: {
     login: async ({
       email,
@@ -156,6 +156,22 @@ export default {
         'user/login',
         {
           data: { email, pass },
+        },
+        {},
+      )
+    },
+    new: async ({
+      account,
+      address,
+    }: newUserType): Promise<resultType<{ success: boolean }>> => {
+      console.log(account)
+
+      return await basicFetch(
+        'POST',
+        'user/new',
+        {
+          account: JSON.stringify(account),
+          address: JSON.stringify(address),
         },
         {},
       )
