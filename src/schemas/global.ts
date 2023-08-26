@@ -42,6 +42,11 @@ const newUserSchema = z.object({
   }),
 })
 
+export const loginUserSchema = z.object({
+  email: z.string().email('Informe um email válido'),
+  pass: z.string().min(8, 'Informe uma senha de pelo menos 8 caracteres'),
+})
+
 export type newUserType = z.infer<typeof newUserSchema>
 export type AuthUserType = {
   email: string
