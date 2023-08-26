@@ -7,7 +7,7 @@ export default function BarraPesquisa() {
       {/* Barra de pesquisa */}
       <div className="relative flex w-full mt-8 items-center justify-center">
         <input
-          className={`bg-cyan-figma w-4/5 h-7 border-none absolute`}
+          className={`bg-cyan-figma w-60 h-7 border-none absolute`}
           style={{
             borderRadius: '20px',
             fontWeight: 'bold',
@@ -24,7 +24,7 @@ export default function BarraPesquisa() {
         />
         <Image
           className="relative"
-          style={{ marginLeft: '15.5625em' }}
+          style={{ marginLeft: '200px' }}
           src={lupa}
           alt="lupa"
         />
