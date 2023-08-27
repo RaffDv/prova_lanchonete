@@ -12,7 +12,7 @@ export default function PageAdd() {
     <main className="flex flex-col h-full w-full">
       <div className="flex w-full h-44 bg-slate-600 justify-start items-start">
         <Link
-          href={`.`}
+          href={`/food`}
           style={{ borderRadius: '100%' }}
           className="w-6 h-6 bg-slate-300 flex items-center justify-center m-2 font-bold"
         >{`<-`}</Link>
@@ -24,22 +24,21 @@ export default function PageAdd() {
           palmito, ovo, cebola, pimentão, maionese, azeitonas verdes
         </p>
       </div>
-      <div className="flex m-3 flex-col justify-center mt-6">
-        <div className="flex items-center">
-          <Image src={CloudText} alt="teste" width={22} />
-          <p className="ml-2 text-xs font-bold">Observações:</p>
-        </div>
-        {/* Observações */}
+      {/* Observações */}
+      <div className="flex items-center m-2">
+        <Image src={CloudText} alt="teste" width={22} />
+        <p className="ml-2 text-xs font-bold">Observações:</p>
+      </div>
+      <div className="flex m-3 flex-col justify-center items-center mt-2">
         <textarea
-          style={{ borderRadius: '30px' }}
-          className="bg-cyan-figma text-xs resize-none p-2"
+          className="bg-cyan-figma text-xs resize-none p-2 w-80 border rounded-3xl"
           name=""
           id=""
           rows={5}
         ></textarea>
         {/* Fim Observações */}
         {/* Inicio tamanho */}
-        <div className="flex flex-col text-xs font-bold text-font m-3 gap-2 mt-10 mb-12">
+        <div className="flex flex-col w-full text-xs font-bold text-font m-3 gap-2 mt-10 mb-12">
           <p>Tamanho:</p>
           <div className="flex text-xs">
             <input
@@ -66,7 +65,7 @@ export default function PageAdd() {
         </div>
         {/* Fim tamanho */}
         {/* Inicio botões */}
-        <div className="flex justify-between m-4 mt-6">
+        <div className="flex justify-between w-full m-4 mt-6">
           <div className="flex flex-row font-bold items-center gap-1">
             <p className="text-sm text-font">Adicionar:</p>
             <input

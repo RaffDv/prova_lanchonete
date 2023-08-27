@@ -1,9 +1,9 @@
 'use client'
-import Base from './components/Base'
-import Car from './components/Car'
-import Config from './components/Config'
-import Lanches from './components/Lanches'
-import Bebidas from './components/Bebidas'
+import Base from '@/components/Base'
+import Car from '@/components/Car'
+import Config from '@/components/Config'
+import Lanches from '@/components/Lanches'
+import Bebidas from '@/components/Bebidas'
 import { useState } from 'react'
 
 export default function Home() {
@@ -26,7 +26,7 @@ export default function Home() {
         </div>
       </div>
       {/* Fim navbar */}
-      <div className="flex font-bold w-full justify-around mt-4 text-gray-1">
+      <div className="flex font-bold w-full justify-center mt-4 text-gray-1">
         <button
           onClick={() => setPage(1)}
           className={`flex w-36 justify-center ${

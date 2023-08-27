@@ -4,6 +4,7 @@ import lanche from '@/image/lanche1.svg'
 import Link from 'next/link'
 
 export default function Lista() {
+  const id = 90
   return (
     <main className=" flex flex-row justify-center items-center w-full border-b-2">
       {/* Inicio Lista de lanches */}
@@ -32,7 +33,7 @@ export default function Lista() {
           {/* Inicio botão */}
           <div className="relative ml-20 flex items-end mb-2">
             <Link
-              href={'/food/90'}
+              href={`/food/${id}/add`}
               className="flex font-bold items-center justify-center border rounded-full"
               style={{
                 width: '46px',

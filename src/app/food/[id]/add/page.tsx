@@ -1,6 +1,6 @@
 'use client'
 
-import PageAdd from '@/app/components/PageAdd'
+import PageAdd from '@/components/PageAdd'
 
 export default function Pedido() {
   return <PageAdd />
