@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import logo from '@/image/logo.svg'
+import Link from 'next/link'
 
 export default function New() {
   const { back } = useRouter()
@@ -19,6 +20,7 @@ export default function New() {
       <h2 className="flex w-full justify-center font-bold opacity-80 text-lg">
         Adicionar
       </h2>
+      <Link href={'/admin/food/new/form'}>modal</Link>
       {/* <div className="flex m-4 mt-6 border-b-2 gap-4">
         <p>Image</p>
       </div> */}
