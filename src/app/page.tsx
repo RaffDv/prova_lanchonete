@@ -10,7 +10,11 @@ export default function Home() {
 
   type jwtType = z.infer<typeof JwtSchema>
   const token = cookies().get('token')?.value
-  const isAdmin: jwtType = jwtDecode(atob(token as string))
+
+  let isAdmin: jwtType = {} as jwtType
+  if (isLogged) {
+    isAdmin = jwtDecode(atob(token as string))
+  }
   console.log(JSON.stringify(isAdmin, null, 4))
 
   return (
