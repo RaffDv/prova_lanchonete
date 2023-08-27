@@ -5,17 +5,16 @@ import jwtDecode from 'jwt-decode'
 import { cookies } from 'next/headers'
 import { z } from 'zod'
 
+export type jwtType = z.infer<typeof JwtSchema>
 export default function Home() {
   const isLogged = cookies().has('token')
 
-  type jwtType = z.infer<typeof JwtSchema>
   const token = cookies().get('token')?.value
 
   let isAdmin: jwtType = {} as jwtType
   if (isLogged) {
     isAdmin = jwtDecode(atob(token as string))
   }
-  console.log(JSON.stringify(isAdmin, null, 4))
 
   return (
     <>
