@@ -4,6 +4,7 @@ import logo from '@/image/logo.svg'
 import { useState } from 'react'
 import Perfil from '@/components/Perfil'
 import Endereco from '@/components/Endereco'
+import Link from 'next/link'
 
 export default function Edit() {
   const [page, setPage] = useState<number>(1)
@@ -11,9 +12,12 @@ export default function Edit() {
   return (
     <section className="w-full h-full flex flex-col">
       <div className="flex m-4 items-center w-1/2 justify-between">
-        <button className="w-8 h-8 bg-buttonBg border rounded-full text-white text-base">
+        <Link
+          href={`/food`}
+          className="w-8 h-8 bg-buttonBg border rounded-full text-white text-base flex justify-center items-center"
+        >
           {'<-'}
-        </button>
+        </Link>
         <Image src={logo} width={35} height={35} alt="Logo lanchonete" />
       </div>
       <h2 className="flex w-full justify-center font-bold opacity-80 text-lg">
