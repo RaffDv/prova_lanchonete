@@ -1,9 +1,9 @@
 'use client'
-import Base from '@/app/components/Base'
-import Car from '@/app/components/Car'
-import Config from '@/app/components/Config'
-import Bebida from '@/app/components/RegisterFood/Bebida'
-import Lanche from '@/app/components/RegisterFood/Lanche'
+import Base from '@/components/Base'
+import Car from '@/components/Car'
+import Config from '@/components/Config'
+import Bebida from '@/components/RegisterFood/Bebida'
+import Lanche from '@/components/RegisterFood/Lanche'
 import { useState } from 'react'
 
 export default function Register() {

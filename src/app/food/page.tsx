@@ -1,9 +1,9 @@
 'use client'
-import Base from '../components/Base'
-import Car from '../components/Car'
-import Config from '../components/Config'
-import Lanches from '../components/Lanches'
-import Bebidas from '../components/Bebidas'
+import Base from '../../components/Base'
+import Car from '../../components/Car'
+import Config from '../../components/Config'
+import Lanches from '../../components/Lanches'
+import Bebidas from '../../components/Bebidas'
 import { useState } from 'react'
 
 export default function Home() {
