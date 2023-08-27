@@ -100,7 +100,7 @@ class UserController{
         $data = json_decode($body['data'],true);
         try {
             
-            $r =$this->db->select_sql('users',['fields' => 'user,email'],$data);
+            $r =$this->db->select_sql('users',['fields' => 'user,email,privileges'],$data);
             $jwt = \Models\JWTProvider::encode_token($r[0]);
             $jwt = ['token' => $jwt];
             $this->status = 200;

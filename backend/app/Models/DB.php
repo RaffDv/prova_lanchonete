@@ -89,7 +89,6 @@ class BD
                 }
                 $sql .= " WHERE " . implode(" AND ", $whereConditions);
             }
-            
             $r = $this->safeQuery($sql, $filter,2);
             
             if($r){

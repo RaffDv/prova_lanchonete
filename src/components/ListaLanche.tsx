@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image'
-import lanche from '@/image/lanche1.svg'
+import lanche from '@/image/burguer.svg'
 import Link from 'next/link'
 
 export default function Lista() {

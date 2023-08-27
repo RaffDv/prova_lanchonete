@@ -155,7 +155,7 @@ export default {
         'POST',
         'user/login',
         {
-          data: { email, pass },
+          data: JSON.stringify({ email, pass }),
         },
         {},
       )

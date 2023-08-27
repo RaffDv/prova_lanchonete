@@ -47,6 +47,13 @@ export const loginUserSchema = z.object({
   pass: z.string().min(8, 'Informe uma senha de pelo menos 8 caracteres'),
 })
 
+export const JwtSchema = z.object({
+  exp: z.number(),
+  user: z.string(),
+  email: z.string(),
+  privileges: z.number(),
+})
+
 export type newUserType = z.infer<typeof newUserSchema>
 export type AuthUserType = {
   email: string
