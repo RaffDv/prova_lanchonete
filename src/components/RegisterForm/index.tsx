@@ -11,6 +11,7 @@ import { z } from 'zod'
 import Error from '../defaultComponents/Error'
 import api from '@/api'
 import { AuthContext } from '@/contexts/user/auth'
+import Link from 'next/link'
 export type formProps = z.infer<typeof AccountSchema>
 export default function RegisterForm() {
   const {
@@ -50,15 +51,8 @@ export default function RegisterForm() {
 
       login({ email, pass })
     }
-    /**
-     * new(data)
-     * ->boolean (success or fail)
-     * ->fail: error in display
-     * ->succes: login function ( context )
-     */
-
-    // chamar login
   }
+  console.log(errors)
 
   return (
     <section className="w-full h-full flex flex-col justify-center items-center p-4 ">
@@ -107,7 +101,7 @@ export default function RegisterForm() {
 
             <input
               {...register('account.pass')}
-              type="text"
+              type="password"
               className="border rounded-full bg-inputBg p-2"
               placeholder="Senha"
             />
@@ -115,7 +109,7 @@ export default function RegisterForm() {
 
             <input
               {...register('account.passConf')}
-              type="text"
+              type="password"
               className="border rounded-full bg-inputBg p-2"
               placeholder="Confirme  a senha"
             />
@@ -196,6 +190,7 @@ export default function RegisterForm() {
             voltar
           </button>
           <button
+            disabled={!!errors.account}
             className={`font-semibold bg-buttonBg p-2  color-font rounded-2xl flex justify-center ${
               page === 2 ? 'w-fit' : 'w-16'
             }`}
@@ -208,6 +203,12 @@ export default function RegisterForm() {
             {page === 1 ? <ArrowRight size={20} /> : 'Enviar'}
           </button>
         </div>
+        <Link
+          href="/user/login"
+          className="text-main leading-relaxed text-sm underline"
+        >
+          Já tem uma conta?
+        </Link>
       </form>
     </section>
   )

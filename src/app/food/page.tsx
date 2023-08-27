@@ -1,9 +1,17 @@
 'use client'
+<<<<<<< HEAD
 import Base from '@/components/Base'
 import Car from '@/components/Car'
 import Config from '@/components/Config'
 import Lanches from '@/components/Lanches'
 import Bebidas from '@/components/Bebidas'
+=======
+import Base from '../../components/Base'
+import Car from '../../components/Car'
+import Config from '../../components/Config'
+import Lanches from '../../components/Lanches'
+import Bebidas from '../../components/Bebidas'
+>>>>>>> a881c5cae9d7a38ce2576868bc8dab51a07a8d35
 import { useState } from 'react'
 
 export default function Home() {
