@@ -5,6 +5,7 @@ import Config from '@/components/Config'
 import Lanches from '@/components/Lanches'
 import Bebidas from '@/components/Bebidas'
 import { useState } from 'react'
+import Modal from '@/components/Modal/page'
 
 export default function Home() {
   const [page, setPage] = useState<number>(1)
