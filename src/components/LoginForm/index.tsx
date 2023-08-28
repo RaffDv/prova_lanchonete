@@ -29,6 +29,8 @@ export default function LoginForm() {
   })
 
   const handleFormSubmit = async (data: LoginUserType) => {
+    console.log(JSON.stringify(data, null, 4))
+
     login({ email: data.email, pass: data.pass })
   }
 

@@ -1,6 +1,6 @@
 'use client'
-import BarraPesquisa from './BarraPesquisa'
-import Lista from './ListaLanche'
+import BarraPesquisa from '@/components/BarraPesquisa'
+import Lista from '@/components/ListaLanche'
 
 // import api from '@/api'
 // import { useEffect } from 'react'

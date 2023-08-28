@@ -2,28 +2,31 @@
 import Base from '@/components/Base'
 import Car from '@/components/Car'
 import Config from '@/components/Config'
-import Bebida from '@/components/RegisterFood/Bebida'
-import Lanche from '@/components/RegisterFood/Lanche'
+import Lanches from '@/components/Lanches'
+import Bebidas from '@/components/Bebidas'
 import { useState } from 'react'
+import Link from 'next/link'
 
-export default function Register() {
+export default function ListMain() {
   const [page, setPage] = useState<number>(1)
+
   return (
-    <main className="flex w-full h-full flex-col justify-start items-center">
+    <main className="flex w-full h-full flex-col justify-center items-center">
       {/* Inicio navbar */}
-      <div className="relative flex w-full h-10  m-4 items-center justify-around">
+      <nav className="relative flex w-full h-10  m-4 items-center justify-around">
         <div className="flex items-center justify-between w-full">
           <Base />
           <div className="flex m-4 gap-4">
-            <a className="hover:scale-110" href="">
+            <Link href="">
               <Car />
-            </a>
-            <a className="hover:scale-110" href="">
+            </Link>
+            <Link href="">
               <Config />
-            </a>
+            </Link>
           </div>
         </div>
-      </div>
+      </nav>
+      {/* Fim navbar */}
       <div className="flex font-bold w-full justify-around mt-4 text-gray-1">
         <button
           onClick={() => setPage(1)}
@@ -42,9 +45,7 @@ export default function Register() {
           Bebidas
         </button>
       </div>
-      {/* Fim navbar */}
-
-      {page === 1 ? <Lanche /> : <Bebida />}
+      {page === 1 ? <Lanches /> : <Bebidas />}
     </main>
   )
 }

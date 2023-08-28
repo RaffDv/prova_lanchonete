@@ -22,7 +22,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUserState(user)
 
     let token = ''
-    const r = await api.user.login({ ...user })
+    const r = await api.user.login({ email: user.email, pass: user.pass })
     if (r.success) {
       console.log(r)
       token = r.auth.split(' ')[1]
