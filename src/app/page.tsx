@@ -5,7 +5,7 @@ import Config from '@/components/Config'
 import Lanches from '@/components/Lanches'
 import Bebidas from '@/components/Bebidas'
 import { useState } from 'react'
-import Modal from '@/components/Modal/page'
+import Link from 'next/link'
 
 export default function Home() {
   const [page, setPage] = useState<number>(1)
@@ -17,12 +17,12 @@ export default function Home() {
         <div className="flex items-center justify-between w-full">
           <Base />
           <div className="flex m-4 gap-4">
-            <a className="hover:scale-110" href="">
+            <Link className="hover:scale-110" href="/">
               <Car />
-            </a>
-            <a className="hover:scale-110" href="">
+            </Link>
+            <Link className="hover:scale-110" href="/user">
               <Config />
-            </a>
+            </Link>
           </div>
         </div>
       </div>

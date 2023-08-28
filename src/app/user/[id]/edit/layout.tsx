@@ -6,8 +6,9 @@ type layoutProps = {
 }
 export default function Layout({ children, modal }: layoutProps) {
   return (
-      { children }
+    <>
+      {children}
       {modal}
-    
-    )
+    </>
+  )
 }
