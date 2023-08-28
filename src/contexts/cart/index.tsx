@@ -1,7 +1,7 @@
 'use client'
 import { createContext, useState } from 'react'
 
-type cartContextType = {
+type cartType = {
   order: {
     food: {
       name: string
@@ -27,11 +27,15 @@ type drinkType = {
   value: number
   amount: number
 }
+type cartContext = {
+  cartState: cartType | null
+  updateFood: (food: foodType) => void
+}
 
-const CartContex = createContext<cartContextType>({} as cartContextType)
+const CartContex = createContext<cartContext>({} as cartContext)
 
 const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [cartState, setCartState] = useState<cartContextType>({
+  const [cartState, setCartState] = useState<cartType>({
     order: {
       drink: {
         amount: 0,
@@ -53,7 +57,12 @@ const CartProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <CartContex.Provider>
+    <CartContex.Provider
+      value={{
+        cartState,
+        updateFood,
+      }}
+    >
       <>{children}</>
     </CartContex.Provider>
   )

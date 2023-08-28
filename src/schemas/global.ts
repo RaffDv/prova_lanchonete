@@ -54,6 +54,17 @@ export const JwtSchema = z.object({
   privileges: z.number(),
 })
 
+export const newFoodSchema = z.object({
+  name: z.string().min(1, 'Este campo é obrigatório'),
+  description: z.string().min(1, 'Este campo é obrigatório'),
+  ingredients: z.string().min(1, 'Este campo é obrigatório'),
+  image: z.any(),
+  size: z.string().array(),
+  valueP: z.string().optional(),
+  valueM: z.string().optional(),
+  valueG: z.string().optional(),
+})
+
 export type newUserType = z.infer<typeof newUserSchema>
 export type AuthUserType = {
   email: string
