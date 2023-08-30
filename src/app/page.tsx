@@ -15,10 +15,11 @@ export default function Home() {
   if (isLogged) {
     isAdmin = jwtDecode(atob(token as string))
   }
+  const UserEmail = isAdmin.email
 
   return (
     <>
-      <ListMain />
+      <ListMain UserEmail={UserEmail} />
       {isLogged && isAdmin.privileges === 10 && <NewItemButton />}
     </>
   )

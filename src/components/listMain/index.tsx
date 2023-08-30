@@ -7,7 +7,7 @@ import Bebidas from '@/components/Bebidas'
 import { useState } from 'react'
 import Link from 'next/link'
 
-export default function ListMain() {
+export default function ListMain({ UserEmail }: { UserEmail: string }) {
   const [page, setPage] = useState<number>(1)
 
   return (
@@ -17,10 +17,10 @@ export default function ListMain() {
         <div className="flex items-center justify-between w-full">
           <Base />
           <div className="flex m-4 gap-4">
-            <Link href="">
+            <Link href={`/user/${UserEmail}/cart`}>
               <Car />
             </Link>
-            <Link href="">
+            <Link href={`/user/${UserEmail}/edit/`}>
               <Config />
             </Link>
           </div>

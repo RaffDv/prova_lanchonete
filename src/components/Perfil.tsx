@@ -7,10 +7,6 @@ export default function Perfil() {
       <UserInfo title="Email" value="Email Usuário" />
 
       <UserInfo title="Senha" value="********" />
-
-      <button className="flex mt-12 w-32 h-7 bg-buttonBg border rounded-full text-font font-bold item-center justify-center">
-        Salvar
-      </button>
     </section>
   )
 }
