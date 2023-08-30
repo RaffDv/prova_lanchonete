@@ -63,7 +63,10 @@ export default function Payment() {
       )}
       {payment === 2 && (
         <div className="w-full flex flex-col items-center justify-center">
-          <button className="flex mt-12 w-32 h-7 bg-buttonBg border rounded-full text-font font-bold item-center justify-center">
+          <button
+            onClick={() => router.push('payment/sucess')}
+            className="flex mt-12 w-32 h-7 bg-buttonBg border rounded-full text-font font-bold item-center justify-center"
+          >
             Finalizar
           </button>
         </div>
