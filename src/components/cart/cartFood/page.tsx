@@ -25,23 +25,7 @@ export default function CartFood() {
           </div>
           {/* Final textos */}
           {/* Inicio botão */}
-          <div className="relative ml-20 flex items-end mb-2">
-            <button
-              onClick={() => setValue(value - 1)}
-              className="w-4 h-4  border-2 flex justify-center items-center"
-            >
-              -
-            </button>
-            <p className="w-4 h-4  border-2 flex justify-center items-center border-r-0 border-l-0 text-xs">
-              {`${value >= 1 ? value : setValue(1)}`}
-            </p>
-            <button
-              onClick={() => setValue(value + 1)}
-              className="w-4 h-4  border-2 flex justify-center items-center"
-            >
-              +
-            </button>
-          </div>
+          <div className="relative ml-20 flex items-end mb-2"></div>
           {/* Final botão */}
         </div>
       </div>
