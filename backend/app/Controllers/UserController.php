@@ -114,6 +114,21 @@ class UserController{
         $response->getBody()->write($this->msg);
         return $response->withStatus($this->status);
     }
+    public function address(Request $request, Response $response, array $args) {
+        $this->loadDB();
+        $this->status=500;
+        $token = $request->getCookieParams()['token'];
+        $values = \Models\JWTProvider::decode_token($token);
+        try {
+            $r = $this->db->select_sql('users',['fields' => 'country,city,state,district,street,num'],['email'=>$values->email]);
+            $this->msg = ['data' => $r[0]];
+            $this->status = 200;
+        } catch (Exception $e) {
+            $this->msg = ['msg' => $e->getMessage()];
+        }
+        $response->getBody()->write(json_encode($this->msg));
+        return $response;
+    }
 
 
     private function loadDB()

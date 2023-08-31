@@ -68,7 +68,7 @@ export const foodSchema = z.object({
   id: z.number(),
   name: z.string().min(1, 'Este campo é obrigatório'),
   description: z.string().min(1, 'Este campo é obrigatório'),
-  ingredients: z.string().min(1, 'Este campo é obrigatório'),
+  ingredients: z.string().min(1, 'Este campo é obrigatório').optional(),
   image: z.string(),
   valueP: z.string().optional(),
   valueM: z.string().optional(),
@@ -98,3 +98,13 @@ export type AuthUserType = {
   email: string
   pass: string
 }
+
+export const addressSchema = z.object({
+  country: z.string(),
+  state: z.string(),
+  city: z.string(),
+  district: z.string(),
+  street: z.string(),
+  num: z.string(),
+})
+export type addressType = z.infer<typeof addressSchema>

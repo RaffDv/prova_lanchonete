@@ -11,7 +11,7 @@
  */
 
 import { newFoodType } from '@/components/NewFoodForm'
-import { drinkType, foodType, newUserType } from '@/schemas/global'
+import { addressType, drinkType, foodType, newUserType } from '@/schemas/global'
 import axios from 'axios'
 
 const api = axios.create({
@@ -191,6 +191,11 @@ export default {
         },
         {},
       )
+    },
+    address: async (): Promise<
+      resultType<{ data: addressType; msg?: string }>
+    > => {
+      return await basicFetch('GET', 'user/address', {}, {})
     },
   },
 }

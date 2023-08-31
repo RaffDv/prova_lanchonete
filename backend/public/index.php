@@ -43,6 +43,7 @@ $app->group('/api', function (RouteCollectorProxy $api)
     $api->group('/user', function (RouteCollectorProxy $user)
     {
         $user->get('/',[UserController::class, 'get']);
+        $user->get('/address',[UserController::class,'address']);
         $user->get('/{id}',[UserController::class, 'unique']);
         $user->post('/new',[UserController::class,'new']);
         $user->post('/update',[UserController::class,'update']);
