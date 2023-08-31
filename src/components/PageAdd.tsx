@@ -4,14 +4,12 @@ import Link from 'next/link'
 import { foodType } from '@/schemas/global'
 import { ArrowLeft } from '@phosphor-icons/react'
 export default function PageAdd({
-  ingredients,
-  image,
-  name,
-  description,
-  valueG,
-  valueM,
-  valueP,
-}: foodType) {
+  data,
+  valueB,
+}: {
+  data: foodType
+  valueB?: string
+}) {
   const [value, setValue] = useState<number>(0)
   const [qnt, setQnt] = useState<number>(0)
   // Valor Null, Valor médio, Valor grande
@@ -29,8 +27,8 @@ export default function PageAdd({
         </Link>
       </div>
       <div className="flex flex-col m-3 mt-6">
-        <p className="text-font font-bold">{name}</p>
-        <p className="text-font text-xs">{ingredients}</p>
+        <p className="text-font font-bold">{data.name}</p>
+        <p className="text-font text-xs">{data.ingredients}</p>
       </div>
       <div className="flex m-3 flex-col justify-center mt-6">
         <div className="flex items-center">
@@ -47,11 +45,11 @@ export default function PageAdd({
         {/* Inicio tamanho */}
         <div className="flex flex-col text-xs font-bold text-font m-3 gap-2 mt-10 mb-12">
           <p>Tamanho:</p>
-          {valueP && (
+          {data.valueP && (
             <div className="flex text-xs">
               <input
                 onClick={() => {
-                  setValue(Number(valueP))
+                  setValue(Number(data.valueP))
                   setQnt(1)
                 }}
                 type="radio"
@@ -59,39 +57,56 @@ export default function PageAdd({
                 id="tamP"
               />
               <label htmlFor="tamP" className="ml-1">
-                P - R$ {valueP},00
+                P - R$ {data.valueP},00
               </label>
             </div>
           )}
-          {valueM && (
+          {data.valueM && (
             <div className="flex text-xs">
               <input
                 onClick={() => {
                   setQnt(1)
-                  setValue(Number(valueM))
+                  setValue(Number(data.valueM))
                 }}
                 type="radio"
                 name="tamanho"
                 id="tamM"
               />
               <label htmlFor="tamM" className="ml-1">
-                M - R$ {valueM},00
+                M - R$ {data.valueM},00
               </label>
             </div>
           )}
-          {valueG && (
+          {data.valueG && (
             <div className="flex text-xs">
               <input
                 onClick={() => {
                   setQnt(1)
-                  setValue(Number(valueG))
+                  setValue(Number(data.valueG))
                 }}
                 type="radio"
                 name="tamanho"
                 id="tamG"
               />
               <label htmlFor="tamG" className="ml-1">
-                G - R$ {valueG},00
+                G - R$ {data.valueG},00
+              </label>
+            </div>
+          )}
+
+          {valueB && (
+            <div className="flex text-xs">
+              <input
+                onClick={() => {
+                  setQnt(1)
+                  setValue(Number(valueB))
+                }}
+                type="radio"
+                name="tamanho"
+                id="drinkV"
+              />
+              <label htmlFor="drinkV" className="ml-1">
+                R$ {valueB},00
               </label>
             </div>
           )}
