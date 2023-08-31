@@ -2,8 +2,8 @@
 import { useRouter } from 'next/navigation'
 
 import Link from 'next/link'
-import Lanches from '@/components/Lanches'
 import { ArrowLeft } from '@phosphor-icons/react'
+import Bebidas from '@/components/Bebidas'
 
 export default function New() {
   const { back } = useRouter()
@@ -19,18 +19,18 @@ export default function New() {
         </button>
       </div>
       <h2 className="flex w-full justify-center font-bold opacity-80 text-lg">
-        Adicionar comida
+        Adicionar bebida
       </h2>
-      <Lanches />
+      <Bebidas />
       <Link
-        href={'/admin/drink/new'}
+        href={'/admin/food/new'}
         className="text-sm leading-relaxed text-main underline cursor-pointer my-2"
       >
-        Cadastrar bebida
+        Cadastrar comida
       </Link>
 
       <Link
-        href={'/admin/food/new/formFood'}
+        href={'/admin/drink/new/form'}
         className="bg-buttonBg border rounded-full w-fit h-fit p-1 px-2"
       >
         Cadastrar

@@ -10,7 +10,8 @@
  * OBS: This file is modified and refactored by RaffDv
  */
 
-import { newUserType } from '@/schemas/global'
+import { newFoodType } from '@/components/NewFoodForm'
+import { addressType, drinkType, foodType, newUserType } from '@/schemas/global'
 import axios from 'axios'
 
 const api = axios.create({
@@ -142,7 +143,22 @@ const buildParamString = (params: any) => {
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   general: {},
-  food: {},
+  food: {
+    get: async (): Promise<resultType<{ data: foodType[]; msg?: string }>> => {
+      return await basicFetch('GET', 'food/', {}, {})
+    },
+    unique: async (id: number): Promise<resultType<{ data: foodType }>> => {
+      return await basicFetch('GET', `food/${id}`, {}, {})
+    },
+  },
+  drink: {
+    get: async (): Promise<resultType<{ data: drinkType[]; msg?: string }>> => {
+      return await basicFetch('GET', 'drink/', {}, {})
+    },
+    unique: async (id: number): Promise<resultType<{ data: drinkType }>> => {
+      return await basicFetch('GET', `drink/${id}`, {}, {})
+    },
+  },
   user: {
     login: async ({
       email,
@@ -175,6 +191,11 @@ export default {
         },
         {},
       )
+    },
+    address: async (): Promise<
+      resultType<{ data: addressType; msg?: string }>
+    > => {
+      return await basicFetch('GET', 'user/address', {}, {})
     },
   },
 }

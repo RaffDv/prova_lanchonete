@@ -2,13 +2,13 @@ import React from 'react'
 
 type layoutProps = {
   children: React.ReactNode
-  modalFood: React.ReactNode
+  modal: React.ReactNode
 }
-export default function Layout({ children, modalFood }: layoutProps) {
+export default function Layout({ children, modal }: layoutProps) {
   return (
     <>
       {children}
-      {modalFood}
+      {modal}
     </>
   )
 }

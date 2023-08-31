@@ -59,14 +59,52 @@ export const newFoodSchema = z.object({
   description: z.string().min(1, 'Este campo é obrigatório'),
   ingredients: z.string().min(1, 'Este campo é obrigatório'),
   image: z.any(),
-  size: z.string().array(),
+  size: z.string().array().optional(),
   valueP: z.string().optional(),
   valueM: z.string().optional(),
   valueG: z.string().optional(),
 })
+export const foodSchema = z.object({
+  id: z.number(),
+  name: z.string().min(1, 'Este campo é obrigatório'),
+  description: z.string().min(1, 'Este campo é obrigatório'),
+  ingredients: z.string().min(1, 'Este campo é obrigatório').optional(),
+  image: z.string(),
+  valueP: z.string().optional(),
+  valueM: z.string().optional(),
+  valueG: z.string().optional(),
+})
+export type foodType = z.infer<typeof foodSchema>
+
+export const newDrinkSchema = z.object({
+  name: z.string().min(2, 'Nome da bebida precisa ter mais que duas letras'),
+  description: z.string(),
+  image: z.any(),
+  value: z.string(),
+})
+
+export const drinkSchema = z.object({
+  id: z.number(),
+  name: z.string().min(1, 'Este campo é obrigatório'),
+  description: z.string().min(1, 'Este campo é obrigatório'),
+  image: z.string(),
+  value: z.string(),
+})
+
+export type drinkType = z.infer<typeof drinkSchema>
 
 export type newUserType = z.infer<typeof newUserSchema>
 export type AuthUserType = {
   email: string
   pass: string
 }
+
+export const addressSchema = z.object({
+  country: z.string(),
+  state: z.string(),
+  city: z.string(),
+  district: z.string(),
+  street: z.string(),
+  num: z.string(),
+})
+export type addressType = z.infer<typeof addressSchema>
