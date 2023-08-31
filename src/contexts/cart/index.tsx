@@ -1,7 +1,8 @@
 'use client'
-import { createContext, useState } from 'react'
 
-type cartType = {
+import { createContext, useContext, useState } from 'react'
+
+export type CartType = {
   order: {
     food: {
       name: string
@@ -27,45 +28,46 @@ type drinkType = {
   value: number
   amount: number
 }
-type cartContext = {
-  cartState: cartType | null
-  updateFood: (food: foodType) => void
+
+type CartContext = {
+  foodUpdate: (food: foodType) => void
+  drinkUpdate: (drink: drinkType) => void
+  food: foodType[]
+  drink: drinkType[]
 }
 
-const CartContex = createContext<cartContext>({} as cartContext)
+const CartContext = createContext<CartContext>({} as CartContext)
 
 const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [cartState, setCartState] = useState<cartType>({
-    order: {
-      drink: {
-        amount: 0,
-        name: '',
-        value: 0,
-      },
-      food: {
-        amount: 0,
-        name: '',
-        value: 0,
-      },
-    },
-  })
+  const [food, setFood] = useState<foodType[]>([])
+  const [drink, setDrink] = useState<drinkType[]>([])
 
-  const updateFood = (food: foodType) => {
-    const ns = { ...cartState }
-    const nsF = ns.order.food
-    // nsF = ns
+  const foodUpdate = (food: foodType) => {
+    setFood((prev) => {
+      const ns = [...prev, food]
+      return ns
+    })
+    console.log(food)
   }
-
+  const drinkUpdate = (drink: drinkType) => {
+    setDrink((prev) => {
+      const ns = [...prev, drink]
+      return ns
+    })
+    console.log(food)
+  }
   return (
-    <CartContex.Provider
+    <CartContext.Provider
       value={{
-        cartState,
-        updateFood,
+        foodUpdate,
+        drinkUpdate,
+        food,
+        drink,
       }}
     >
       <>{children}</>
-    </CartContex.Provider>
+    </CartContext.Provider>
   )
 }
 
-export { CartContex, CartProvider }
+export { CartProvider, CartContext }

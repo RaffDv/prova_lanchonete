@@ -1,8 +1,12 @@
 'use client'
-import { useState } from 'react'
-import Link from 'next/link'
+import { useContext, useState } from 'react'
 import { foodType } from '@/schemas/global'
 import { ArrowLeft } from '@phosphor-icons/react'
+
+import { CartContext } from '@/contexts/cart'
+
+import { useRouter } from 'next/navigation'
+
 export default function PageAdd({
   data,
   valueB,
@@ -12,19 +16,22 @@ export default function PageAdd({
 }) {
   const [value, setValue] = useState<number>(0)
   const [qnt, setQnt] = useState<number>(0)
+
+  const { foodUpdate, drinkUpdate } = useContext(CartContext)
+
+  const { push, back } = useRouter()
   // Valor Null, Valor médio, Valor grande
 
   return (
     <main className="flex flex-col h-full w-full">
       <div className="flex w-full h-44 bg-slate-600 justify-start items-start">
-        <Link
-          href={`.`}
-          style={{ borderRadius: '100%' }}
+        <button
+          onClick={() => back()}
           className="w-6 h-6 bg-slate-300 flex items-center justify-center m-2 font-bold z-10"
         >
           {' '}
           <ArrowLeft size={20} weight="bold" />{' '}
-        </Link>
+        </button>
       </div>
       <div className="flex flex-col m-3 mt-6">
         <p className="text-font font-bold">{data.name}</p>
@@ -43,7 +50,7 @@ export default function PageAdd({
         ></textarea>
         {/* Fim Observações */}
         {/* Inicio tamanho */}
-        <div className="flex flex-col text-xs font-bold text-font m-3 gap-2 mt-10 mb-12">
+        <div className="flex flex-col w-full text-xs font-bold text-font m-3 gap-2 mt-10 mb-12">
           <p>Tamanho:</p>
           {data.valueP && (
             <div className="flex text-xs">
@@ -113,7 +120,7 @@ export default function PageAdd({
         </div>
         {/* Fim tamanho */}
         {/* Inicio botões */}
-        <div className="flex justify-between m-4 mt-6">
+        <div className="flex justify-between w-full m-4 mt-6">
           <div className="flex flex-row font-bold items-center gap-1">
             <p className="text-sm text-font">Adicionar:</p>
             <input
@@ -140,6 +147,23 @@ export default function PageAdd({
           </div>
           <div>
             <input
+              onClick={() => {
+                if (valueB) {
+                  drinkUpdate({
+                    name: data.name,
+                    value,
+                    amount: qnt,
+                  })
+                } else {
+                  foodUpdate({
+                    name: data.name,
+                    value,
+                    amount: qnt,
+                  })
+                }
+
+                push('/')
+              }}
               className="bg-cyan-figma w-32 h-6 flex justify-center items-center text-xs font-bold"
               style={{ borderRadius: '20px' }}
               type="button"
