@@ -68,4 +68,9 @@ const CartProvider = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-export { CartProvider }
+const useAuth = () => {
+  const context = useContext(cartContext)
+  return context
+}
+
+export { CartProvider, useAuth }

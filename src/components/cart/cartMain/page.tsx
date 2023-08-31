@@ -20,11 +20,7 @@ export default function CartMain() {
       <h2 className="flex w-full justify-center font-bold opacity-80 text-lg">
         Carrinho
       </h2>
-      <div className="w-full flex flex-col items-center border-t-4 border-t-cyan-figma mt-8">
-        <CartFood />
-        <CartFood />
-        <CartFood />
-      </div>
+      <div className="w-full flex flex-col items-center border-t-4 border-t-cyan-figma mt-8"></div>
       <div className="relative w-full flex flex-col justify-center items-center">
         <div className="w-full flex justify-around h-full items-end text-sm mt-10">
           <p>Total com a entrega:</p>

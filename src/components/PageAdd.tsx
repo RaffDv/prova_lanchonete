@@ -3,6 +3,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { foodType } from '@/schemas/global'
 import { ArrowLeft } from '@phosphor-icons/react'
+import { useAuth } from '@/contexts/cart'
+import { data } from 'autoprefixer'
 export default function PageAdd({
   ingredients,
   image,
@@ -12,6 +14,7 @@ export default function PageAdd({
   valueM,
   valueP,
 }: foodType) {
+  const { foodUpdate, drinkUpdate } = useAuth()
   const [value, setValue] = useState<number>(0)
   const [qnt, setQnt] = useState<number>(0)
   // Valor Null, Valor médio, Valor grande
@@ -125,6 +128,21 @@ export default function PageAdd({
           </div>
           <div>
             <input
+              onClick={() => {
+                if (valueD) {
+                  drinkUpdate({
+                    name: `${name}`,
+                    value,
+                    amount: qnt,
+                  })
+                } else {
+                  foodUpdate({
+                    name: `${name}`,
+                    value,
+                    amount: qnt,
+                  })
+                }
+              }}
               className="bg-cyan-figma w-32 h-6 flex justify-center items-center text-xs font-bold"
               style={{ borderRadius: '20px' }}
               type="button"
