@@ -5,6 +5,7 @@ import Pix from '../Pix'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import confirmed from '@/image/confirmed.svg'
+import Money from '../Money'
 export default function ToPayment() {
   const [page, setPage] = useState<number>(1)
   const [show, setShow] = useState<boolean>(false)
@@ -47,7 +48,7 @@ export default function ToPayment() {
           </span>
         </div>
 
-        {page === 1 ? <Pix /> : null}
+        {page === 1 ? <Pix /> : <Money />}
         <div className="bottom-4 flex w-full justify-center">
           <span
             onClick={() => {

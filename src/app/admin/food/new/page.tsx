@@ -30,7 +30,7 @@ export default function New() {
       </Link>
 
       <Link
-        href={'/admin/food/new/formFood'}
+        href={'/admin/food/new/form'}
         className="bg-buttonBg border rounded-full w-fit h-fit p-1 px-2"
       >
         Cadastrar
