@@ -6,6 +6,7 @@ import Lanches from '@/components/Lanches'
 import Bebidas from '@/components/Bebidas'
 import { useState } from 'react'
 import Link from 'next/link'
+import BarraPesquisa from '../BarraPesquisa'
 
 export default function ListMain() {
   const [page, setPage] = useState<number>(1)
@@ -45,6 +46,7 @@ export default function ListMain() {
           Bebidas
         </button>
       </div>
+      <BarraPesquisa />
       {page === 1 ? <Lanches /> : <Bebidas />}
     </main>
   )

@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
-export default function Form() {
+export default function FormDrink() {
   const { back } = useRouter()
   useEffect(() => {
     back()

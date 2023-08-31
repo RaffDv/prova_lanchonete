@@ -63,7 +63,6 @@ class BD
                 }
                 $sql .= '(' . implode(",", $whereConditions) . ')';
             }
-
     
             $r = $this->safeQuery($sql, $values);
             if($r){
@@ -89,6 +88,7 @@ class BD
                 }
                 $sql .= " WHERE " . implode(" AND ", $whereConditions);
             }
+
             $r = $this->safeQuery($sql, $filter,2);
             
             if($r){
