@@ -32,45 +32,42 @@ type drinkType = {
 type CartContext = {
   foodUpdate: (food: foodType) => void
   drinkUpdate: (drink: drinkType) => void
+  food: foodType[]
+  drink: drinkType[]
 }
 
-const cartContext = createContext<CartContext>({} as CartContext)
+const CartContext = createContext<CartContext>({} as CartContext)
 
 const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [food, setFood] = useState<foodType | null>({
-    name: '',
-    value: 0,
-    amount: 0,
-  })
-  const [drink, setDrink] = useState<drinkType | null>({
-    name: '',
-    value: 0,
-    amount: 0,
-  })
+  const [food, setFood] = useState<foodType[]>([])
+  const [drink, setDrink] = useState<drinkType[]>([])
 
   const foodUpdate = (food: foodType) => {
-    setFood(food)
+    setFood((prev) => {
+      const ns = [...prev, food]
+      return ns
+    })
     console.log(food)
   }
   const drinkUpdate = (drink: drinkType) => {
-    setDrink(drink)
-    console.log(drink)
+    setDrink((prev) => {
+      const ns = [...prev, drink]
+      return ns
+    })
+    console.log(food)
   }
   return (
-    <cartContext.Provider
+    <CartContext.Provider
       value={{
         foodUpdate,
         drinkUpdate,
+        food,
+        drink,
       }}
     >
-      {children}
-    </cartContext.Provider>
+      <>{children}</>
+    </CartContext.Provider>
   )
 }
 
-const useAuth = () => {
-  const context = useContext(cartContext)
-  return context
-}
-
-export { CartProvider, useAuth }
+export { CartProvider, CartContext }

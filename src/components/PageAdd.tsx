@@ -1,10 +1,12 @@
 'use client'
-import { useState } from 'react'
-import Link from 'next/link'
+import { useContext, useState } from 'react'
 import { foodType } from '@/schemas/global'
 import { ArrowLeft } from '@phosphor-icons/react'
-import { useAuth } from '@/contexts/cart'
-import { data } from 'autoprefixer'
+
+import { CartContext } from '@/contexts/cart'
+
+import { useRouter } from 'next/navigation'
+
 export default function PageAdd({
   data,
   valueB,
@@ -14,19 +16,22 @@ export default function PageAdd({
 }) {
   const [value, setValue] = useState<number>(0)
   const [qnt, setQnt] = useState<number>(0)
+
+  const { foodUpdate, drinkUpdate } = useContext(CartContext)
+
+  const { push, back } = useRouter()
   // Valor Null, Valor médio, Valor grande
 
   return (
     <main className="flex flex-col h-full w-full">
       <div className="flex w-full h-44 bg-slate-600 justify-start items-start">
-        <Link
-          href={`/food`}
-          style={{ borderRadius: '100%' }}
+        <button
+          onClick={() => back()}
           className="w-6 h-6 bg-slate-300 flex items-center justify-center m-2 font-bold z-10"
         >
           {' '}
           <ArrowLeft size={20} weight="bold" />{' '}
-        </Link>
+        </button>
       </div>
       <div className="flex flex-col m-3 mt-6">
         <p className="text-font font-bold">{data.name}</p>
@@ -143,19 +148,21 @@ export default function PageAdd({
           <div>
             <input
               onClick={() => {
-                if (valueD) {
+                if (valueB) {
                   drinkUpdate({
-                    name: `${name}`,
+                    name: data.name,
                     value,
                     amount: qnt,
                   })
                 } else {
                   foodUpdate({
-                    name: `${name}`,
+                    name: data.name,
                     value,
                     amount: qnt,
                   })
                 }
+
+                push('/')
               }}
               className="bg-cyan-figma w-32 h-6 flex justify-center items-center text-xs font-bold"
               style={{ borderRadius: '20px' }}

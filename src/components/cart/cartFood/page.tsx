@@ -1,28 +1,40 @@
 import Image from 'next/image'
 import lanche from '@/image/lanche1.svg'
-import { useState } from 'react'
+import { CartContext, CartType } from '@/contexts/cart'
+import { foodType } from '@/schemas/global'
+import { useContext } from 'react'
+import Lanche from '@/components/Lanche'
+import Drink from '@/components/Drink'
 
 export default function CartFood() {
-  const [value, setValue] = useState<number>(1)
+  const { drink, food } = useContext(CartContext)
   return (
     <section className="flex flex-row justify-center items-center w-full border-b-2 border-b-font">
       {/* Inicio Lista de lanches */}
       <div className=" flex flex-row mt-4 mb-4 justify-center mr-12 w-full items-center">
-        <Image src={lanche} alt="demostração lanche" width={60} height={60} />
-        <div className="flex justify-center">
+        <div className="flex flex-col justify-center">
           {/* Inicio textos */}
-          <div className="flex flex-col justify-center ml-6 items-start gap-2">
-            <p
-              className="font-bold"
-              style={{ fontSize: '12px', color: '#514E66' }}
-            >
-              Nome lanche
-            </p>
-
-            <p className="font-bold" style={{ fontSize: '12px' }}>
-              Valor R$
-            </p>
-          </div>
+          {food.map((item) => (
+            <Lanche
+              key={crypto.randomUUID()}
+              name={item.name}
+              description=""
+              id={514}
+              image=""
+              valueG={String(item.value)}
+              ingredients=""
+            />
+          ))}
+          {drink.map((item) => (
+            <Drink
+              key={crypto.randomUUID()}
+              name={item.name}
+              description=""
+              id={514}
+              image=""
+              value={String(item.value)}
+            />
+          ))}
           {/* Final textos */}
           {/* Inicio botão */}
           <div className="relative ml-20 flex items-end mb-2"></div>

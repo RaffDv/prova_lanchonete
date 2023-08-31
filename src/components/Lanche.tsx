@@ -24,9 +24,7 @@ export default function Lanche({
           {/* Inicio textos */}
           <div className="flex flex-col justify-center ml-6 items-start gap-2">
             <p className="font-bold">{name}</p>
-            <p className="w-[190px] h-[30px] overflow-ellipsis text-xs">
-              {description}
-            </p>
+
             <p className="font-bold" style={{ fontSize: '12px' }}>
               R$ {valueP || valueM || valueG}
             </p>
@@ -36,7 +34,7 @@ export default function Lanche({
           {pathname.includes('admin') ? null : (
             <div className="relative flex items-end mb-2 right-0">
               <Link
-                href={`/food/${id}`}
+                href={`/food/${id}/add`}
                 className="flex font-bold items-center justify-center border rounded-full w-fit h-fit px-2 text-xs bg-buttonBg"
               >
                 Adicionar
