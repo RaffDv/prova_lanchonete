@@ -10,11 +10,20 @@
  * OBS: This file is modified and refactored by RaffDv
  */
 
+import { newFoodType } from '@/components/NewFoodForm'
+import {
+  AuthUserType,
+  addressType,
+  drinkType,
+  foodType,
+  newUserType,
+  userType,
+} from '@/schemas/global'
 import axios from 'axios'
 
 const api = axios.create({
   withCredentials: true,
-  baseURL: `http://localhost:4000`,
+  baseURL: `http://localhost:4000/api`,
 })
 
 /**
@@ -23,13 +32,19 @@ const api = axios.create({
  * @param params
  * @returns Fetch
  */
-const simpleBasicFetch = async (endpoint: string, params: string) => {
+const simpleBasicFetch = async (
+  endpoint: string,
+  params: string,
+  headers: object,
+) => {
   let str = `/${endpoint}`
   if (params !== '') {
     str = `${str}?${params}`
   }
 
-  return await api.get(str)
+  return await api.get(str, {
+    headers,
+  })
 }
 
 type resultType<T> = {
@@ -38,12 +53,14 @@ type resultType<T> = {
   success: boolean
   data: T
   msg: string
+  auth: string
 }
 
 const basicFetch = async (
   method: string,
   endpoint: string,
   params: object,
+  headers: object,
   alertConex?: boolean,
   alertError?: boolean,
 ): Promise<resultType<any>> => {
@@ -53,19 +70,21 @@ const basicFetch = async (
     success: false, // Setado em true quando tudo dá certo e status de retorno é 10
     data: false, // Conteúdo JSON recebido do servidor
     msg: '', // Inserido no Front -> Codigo de status que diz o que será carregado pra lá.
+    auth: '',
   }
   try {
     let r: any = false
     try {
       r =
         method === 'POST'
-          ? await api.post(`/${endpoint}/`, buildParamString(params), {
+          ? await api.post(`/${endpoint}`, buildParamString(params), {
               validateStatus: function (status) {
                 return true
               },
+              headers,
             })
           : method === 'GET'
-          ? await simpleBasicFetch(endpoint, buildParamString(params))
+          ? await simpleBasicFetch(endpoint, buildParamString(params), headers)
           : false
     } catch (e: any) {
       r = e.response
@@ -74,6 +93,10 @@ const basicFetch = async (
     if (r) {
       result.reqStat = r.status
       result.success = r.status === 200 || r.status === 201
+
+      result.auth = r.headers
+        ? r.headers.authorization
+        : r.headers.authorization
       if (r.data) result.data = r.data
       const msg = typeof r.data.msg === 'undefined' ? '' : r.data.msg // `stat_${r.status}`;
       if (msg) result.msg = msg
@@ -126,16 +149,67 @@ const buildParamString = (params: any) => {
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
-  general: {
-    testConn: async (): Promise<resultType<string>> => {
-      console.log('executou o teste')
-
-      return await basicFetch('GET', 'somenting.php', {})
+  general: {},
+  food: {
+    get: async (): Promise<resultType<{ data: foodType[]; msg?: string }>> => {
+      return await basicFetch('GET', 'food/', {}, {})
+    },
+    unique: async (id: number): Promise<resultType<{ data: foodType }>> => {
+      return await basicFetch('GET', `food/${id}`, {}, {})
     },
   },
-  food: {
-    get: async (): Promise<resultType<{ data: string }>> => {
-      return await basicFetch('GET', 'api/food/get.php', {})
+  drink: {
+    get: async (): Promise<resultType<{ data: drinkType[]; msg?: string }>> => {
+      return await basicFetch('GET', 'drink/', {}, {})
+    },
+    unique: async (id: number): Promise<resultType<{ data: drinkType }>> => {
+      return await basicFetch('GET', `drink/${id}`, {}, {})
+    },
+  },
+  user: {
+    login: async ({
+      email,
+      pass,
+    }: {
+      email: string
+      pass: string
+    }): Promise<resultType<{ token: string }>> => {
+      return await basicFetch(
+        'POST',
+        'user/login',
+        {
+          data: JSON.stringify({ email, pass }),
+        },
+        {},
+      )
+    },
+    new: async ({
+      account,
+      address,
+    }: newUserType): Promise<resultType<{ success: boolean }>> => {
+      console.log(account)
+
+      return await basicFetch(
+        'POST',
+        'user/new',
+        {
+          account: JSON.stringify(account),
+          address: JSON.stringify(address),
+        },
+        {},
+      )
+    },
+    address: async (): Promise<
+      resultType<{ data: addressType; msg?: string }>
+    > => {
+      return await basicFetch('GET', 'user/address', {}, {})
+    },
+    unique: async ({
+      email,
+    }: {
+      email: string
+    }): Promise<resultType<{ data: userType; msg?: string }>> => {
+      return await basicFetch('GET', `user/${email}`, {}, {})
     },
   },
 }

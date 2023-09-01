@@ -1,22 +1,26 @@
-'use client'
+import NewItemButton from '@/components/defaultComponents/NewItemButton'
+import ListMain from '@/components/listMain'
+import { JwtSchema } from '@/schemas/global'
+import jwtDecode from 'jwt-decode'
+import { cookies } from 'next/headers'
+import { z } from 'zod'
 
-import api from '@/api'
-import { useEffect } from 'react'
-
+export type jwtType = z.infer<typeof JwtSchema>
 export default function Home() {
-  const ttest = async () => {
-    const r = await api.general.testConn()
-    console.log(r)
+  const isLogged = cookies().has('token')
+
+  const token = cookies().get('token')?.value
+
+  let isAdmin: jwtType = {} as jwtType
+  if (isLogged) {
+    isAdmin = jwtDecode(atob(token as string))
   }
-  useEffect(() => {
-    ttest()
-  }, [])
+  const UserEmail = isAdmin.email
+
   return (
-    <main className="flex w-full h-full flex-col items-center justify-between ">
-      <div className="flex w-full  flex-col">
-        <span>ola</span>
-        <div className="flex items-start">{/* <Base /> */}</div>
-      </div>
-    </main>
+    <>
+      <ListMain UserEmail={UserEmail} />
+      {isLogged && isAdmin.privileges === 10 && <NewItemButton />}
+    </>
   )
 }

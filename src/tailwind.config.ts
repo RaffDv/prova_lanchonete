@@ -16,6 +16,9 @@ const config: Config = {
         font: '#514E66',
         dot: '#5C9EDB',
         off: '#A2C3E1',
+        cyan: {
+          figma: '#CDE9E9',
+        },
       },
     },
   },
