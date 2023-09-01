@@ -21,7 +21,7 @@ export default function ListMain({ UserEmail }: { UserEmail: string }) {
             <Link href={`/user/${UserEmail}/cart`}>
               <Car />
             </Link>
-            <Link href={`/user/${UserEmail}/edit/`}>
+            <Link href={`${UserEmail === undefined ? '/user/login' : '/'}`}>
               <Config />
             </Link>
           </div>

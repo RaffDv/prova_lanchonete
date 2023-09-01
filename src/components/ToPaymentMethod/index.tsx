@@ -1,15 +1,17 @@
 'use client'
 import PaymentHeader from '@/components/PaymentHeader'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import Pix from '../Pix'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import confirmed from '@/image/confirmed.svg'
 import Money from '../Money'
+import { CartContext } from '@/contexts/cart'
 export default function ToPayment() {
   const [page, setPage] = useState<number>(1)
   const [show, setShow] = useState<boolean>(false)
   const { push } = useRouter()
+  const { ClearStates } = useContext(CartContext)
   return (
     <>
       {show && (
@@ -56,6 +58,7 @@ export default function ToPayment() {
               setTimeout(() => {
                 setShow(false)
                 push('/')
+                ClearStates()
               }, 1000)
             }}
             className="font-medium rounded-full bg-buttonBg px-2"

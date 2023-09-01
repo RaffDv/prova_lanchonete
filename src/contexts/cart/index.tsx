@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState } from 'react'
+import { createContext, useState } from 'react'
 
 export type CartType = {
   order: {
@@ -8,10 +8,12 @@ export type CartType = {
       name: string
       value: number
       amount: number
+      image: string
     }
     drink: {
       name: string
       value: number
+      image: string
       amount: number
     }
   }
@@ -21,17 +23,20 @@ type foodType = {
   name: string
   value: number
   amount: number
+  image: string
 }
 
 type drinkType = {
   name: string
   value: number
   amount: number
+  image: string
 }
 
 type CartContext = {
   foodUpdate: (food: foodType) => void
   drinkUpdate: (drink: drinkType) => void
+  ClearStates: () => void
   food: foodType[]
   drink: drinkType[]
 }
@@ -56,6 +61,11 @@ const CartProvider = ({ children }: { children: React.ReactNode }) => {
     })
     console.log(food)
   }
+
+  const ClearStates = () => {
+    setDrink([])
+    setFood([])
+  }
   return (
     <CartContext.Provider
       value={{
@@ -63,6 +73,7 @@ const CartProvider = ({ children }: { children: React.ReactNode }) => {
         drinkUpdate,
         food,
         drink,
+        ClearStates,
       }}
     >
       <>{children}</>

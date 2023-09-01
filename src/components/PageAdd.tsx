@@ -106,6 +106,7 @@ export default function PageAdd({
               <input
                 onClick={() => {
                   setQnt(1)
+
                   setValue(Number(valueB))
                 }}
                 type="radio"
@@ -113,7 +114,7 @@ export default function PageAdd({
                 id="drinkV"
               />
               <label htmlFor="drinkV" className="ml-1">
-                R$ {valueB},00
+                R$ {valueB.replaceAll('.', ',')}
               </label>
             </div>
           )}
@@ -153,12 +154,14 @@ export default function PageAdd({
                     name: data.name,
                     value,
                     amount: qnt,
+                    image: data.image,
                   })
                 } else {
                   foodUpdate({
                     name: data.name,
                     value,
                     amount: qnt,
+                    image: data.image,
                   })
                 }
 
@@ -167,7 +170,11 @@ export default function PageAdd({
               className="bg-cyan-figma w-32 h-6 flex justify-center items-center text-xs font-bold"
               style={{ borderRadius: '20px' }}
               type="button"
-              value={`R$: ${qnt > 1 ? qnt * value : value},00`}
+              value={`R$: ${
+                qnt > 1
+                  ? (qnt * value).toFixed(2).replaceAll('.', ',')
+                  : value.toFixed(2).replaceAll('.', ',')
+              }`}
             />
           </div>
         </div>

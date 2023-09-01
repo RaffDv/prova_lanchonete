@@ -20,7 +20,7 @@ export default function UserAddress() {
   return (
     <>
       {address ? (
-        <div className="  flex flex-col items-start justify-center h-20 relative border-b-2  border-b-gray-500 bg-gray-200/80">
+        <div className="  flex flex-col items-start justify-center h-20 relative border-b-2 w-full  border-b-gray-500 bg-gray-200/80">
           <input type="checkbox" checked className="m-1" />
           <span className="text-lg font-medium absolute top-0 left-5">
             {address?.street},N {address?.num}

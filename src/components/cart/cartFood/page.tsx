@@ -20,7 +20,7 @@ export default function CartFood() {
               name={item.name}
               description=""
               id={514}
-              image=""
+              image={item.image}
               valueG={String(item.value)}
               ingredients=""
             />
@@ -31,7 +31,7 @@ export default function CartFood() {
               name={item.name}
               description=""
               id={514}
-              image=""
+              image={item.image}
               value={String(item.value)}
             />
           ))}
