@@ -112,6 +112,7 @@ export type userType = z.infer<typeof userSchema>
 export type AuthUserType = {
   email: string
   pass: string
+  privileges?: number
 }
 
 export const addressSchema = z.object({

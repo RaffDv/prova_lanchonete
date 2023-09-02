@@ -2,13 +2,25 @@
 import Base from '@/components/Base'
 import Lanches from '@/components/Lanches'
 import Bebidas from '@/components/Bebidas'
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import BarraPesquisa from '../BarraPesquisa'
 import DropdownMenu from '../Dropdown'
+import { AuthContext } from '@/contexts/user/auth'
 
-export default function ListMain({ UserEmail }: { UserEmail: string }) {
+export default function ListMain({
+  UserEmail,
+  userPriv,
+}: {
+  UserEmail: string
+  userPriv: number
+}) {
   const [page, setPage] = useState<number>(1)
+  const { setPrivilegesLevel } = useContext(AuthContext)
 
+  useEffect(() => {
+    setPrivilegesLevel(userPriv)
+    console.log('update user privileges')
+  }, [])
   return (
     <main className="flex w-screen h-screen flex-col justify-center items-center">
       {/* Inicio navbar */}

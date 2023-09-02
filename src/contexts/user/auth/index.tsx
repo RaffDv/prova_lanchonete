@@ -8,6 +8,8 @@ type AuthContextProps = {
   userState: AuthUserType | null
   login: (user: AuthUserType) => void
   logout: () => void
+  setPrivilegesLevel: (privileges: number) => void
+  isAdmin: () => boolean
 }
 
 const AuthContext = createContext<AuthContextProps>({} as AuthContextProps)
@@ -16,6 +18,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [userState, setUserState] = useState<AuthUserType>({
     email: '',
     pass: '',
+    privileges: 0,
   })
 
   const login = async (user: AuthUserType) => {
@@ -30,13 +33,25 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       router.push(`/API/user/login?token=${token}`)
     }
   }
+  const setPrivilegesLevel = (privileges: number) => {
+    setUserState({ ...userState, privileges })
+  }
 
   const logout = () => {
     console.log('logout')
   }
 
+  const isAdmin = () => {
+    if (userState.privileges && userState.privileges === 10) {
+      return true
+    }
+    return false
+  }
+
   return (
-    <AuthContext.Provider value={{ userState, login, logout }}>
+    <AuthContext.Provider
+      value={{ userState, login, logout, isAdmin, setPrivilegesLevel }}
+    >
       <>{children}</>
     </AuthContext.Provider>
   )

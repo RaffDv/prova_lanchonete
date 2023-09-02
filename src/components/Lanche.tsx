@@ -3,6 +3,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { foodType } from '@/schemas/global'
 import { usePathname } from 'next/navigation'
+import { useContext } from 'react'
+import { AuthContext } from '@/contexts/user/auth'
 
 export default function Lanche({
   id,
@@ -15,6 +17,10 @@ export default function Lanche({
   valueP,
 }: foodType) {
   const pathname = usePathname()
+  const { isAdmin } = useContext(AuthContext)
+  const admin = isAdmin()
+  console.log(admin)
+
   return (
     <main className=" flex flex-row justify-center items-center w-full border-b-2">
       {/* Inicio Lista de lanches */}
@@ -36,12 +42,21 @@ export default function Lanche({
           {/* Inicio botão */}
           {pathname.includes('admin') ? null : (
             <div className="relative flex items-end mb-2 right-0">
-              <Link
-                href={`/food/${id}/add`}
-                className="flex font-bold items-center justify-center border rounded-full w-fit h-fit px-2 text-xs bg-buttonBg"
-              >
-                Adicionar
-              </Link>
+              {admin ? (
+                <Link
+                  href={`#`}
+                  className="flex font-bold items-center justify-center border rounded-full w-fit h-fit px-2 text-xs bg-buttonBg"
+                >
+                  Editar
+                </Link>
+              ) : (
+                <Link
+                  href={`/food/${id}/add`}
+                  className="flex font-bold items-center justify-center border rounded-full w-fit h-fit px-2 text-xs bg-buttonBg"
+                >
+                  Adicionar
+                </Link>
+              )}
             </div>
           )}
           {/* Final botão */}
