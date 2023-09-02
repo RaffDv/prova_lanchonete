@@ -1,29 +1,22 @@
 'use client'
 import Base from '@/components/Base'
-import Car from '@/components/Car'
-import Config from '@/components/Config'
 import Lanches from '@/components/Lanches'
 import Bebidas from '@/components/Bebidas'
 import { useState } from 'react'
-import Link from 'next/link'
 import BarraPesquisa from '../BarraPesquisa'
+import DropdownMenu from '../Dropdown'
 
 export default function ListMain({ UserEmail }: { UserEmail: string }) {
   const [page, setPage] = useState<number>(1)
 
   return (
-    <main className="flex w-full h-full flex-col justify-center items-center">
+    <main className="flex w-screen h-screen flex-col justify-center items-center">
       {/* Inicio navbar */}
       <nav className="relative flex w-full h-10  m-4 items-center justify-around">
         <div className="flex items-center justify-between w-full">
           <Base />
           <div className="flex m-4 gap-4">
-            <Link href={`/user/${UserEmail}/cart`}>
-              <Car />
-            </Link>
-            <Link href={`${UserEmail === undefined ? '/user/login' : '/'}`}>
-              <Config />
-            </Link>
+            <DropdownMenu UserEmail={UserEmail} />
           </div>
         </div>
       </nav>
