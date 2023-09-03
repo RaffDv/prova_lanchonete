@@ -6,14 +6,17 @@ import { useForm } from 'react-hook-form'
 import { loginUserSchema } from '@/schemas/global'
 import { z } from 'zod'
 import Error from '../defaultComponents/Error'
-import { useContext } from 'react'
-import { AuthContext } from '@/contexts/user/auth'
 import Link from 'next/link'
+import { useAuthStore } from '@/store/auth'
+import console from 'console'
 
 type LoginUserType = z.infer<typeof loginUserSchema>
 
 export default function LoginForm() {
-  const { login } = useContext(AuthContext)
+  const {
+    state: { user },
+    actions,
+  } = useAuthStore()
   const {
     handleSubmit,
     register,
@@ -30,8 +33,9 @@ export default function LoginForm() {
 
   const handleFormSubmit = async (data: LoginUserType) => {
     console.log(JSON.stringify(data, null, 4))
+    actions.setUser({ email: data.email, pass: data.pass, privileges: 0 })
 
-    login({ email: data.email, pass: data.pass })
+    console.log(user)
   }
 
   return (

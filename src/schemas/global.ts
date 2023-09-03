@@ -107,12 +107,7 @@ export const userSchema = z.object({
   street: z.string(),
   num: z.number(),
 })
-
 export type userType = z.infer<typeof userSchema>
-export type AuthUserType = {
-  email: string
-  pass: string
-}
 
 export const addressSchema = z.object({
   country: z.string(),
@@ -123,3 +118,20 @@ export const addressSchema = z.object({
   num: z.string(),
 })
 export type addressType = z.infer<typeof addressSchema>
+//  ZUSTEND USER STORE TYPES
+export type AuthUserType = {
+  email: string
+  pass: string
+  privileges: number
+}
+
+export type ActionsProps = {
+  setUser: (user: AuthUserType) => void
+}
+
+export type StoreProps = {
+  state: {
+    user: AuthUserType
+  }
+  actions: ActionsProps
+}
