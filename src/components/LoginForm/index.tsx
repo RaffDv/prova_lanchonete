@@ -7,16 +7,12 @@ import { loginUserSchema } from '@/schemas/global'
 import { z } from 'zod'
 import Error from '../defaultComponents/Error'
 import Link from 'next/link'
-import { useAuthStore } from '@/store/auth'
-import console from 'console'
+import { useAuthStore } from '@/store/auth/'
+import { useAuth } from '@/hooks/useGetFromAuth'
 
 type LoginUserType = z.infer<typeof loginUserSchema>
 
 export default function LoginForm() {
-  const {
-    state: { user },
-    actions,
-  } = useAuthStore()
   const {
     handleSubmit,
     register,
@@ -30,14 +26,20 @@ export default function LoginForm() {
       pass: '',
     },
   })
+  const {
+    actions: { login },
+  } = useAuthStore()
 
+  const user = useAuth(useAuthStore, (state) => state.state.user)
   const handleFormSubmit = async (data: LoginUserType) => {
-    console.log(JSON.stringify(data, null, 4))
-    actions.setUser({ email: data.email, pass: data.pass, privileges: 0 })
-
-    console.log(user)
+    await login({
+      email: data.email,
+      pass: data.pass,
+      privileges: 0,
+      token: '',
+    })
+    // logout()
   }
-
   return (
     <section className="flex flex-col w-full h-full items-center justify-center p-4 relative">
       <header className="m-3 mb-11 flex flex-col gap-2 items-center">
@@ -45,6 +47,7 @@ export default function LoginForm() {
         <span className="text-main font-semibold leading-relaxed text-3xl">
           Entrar
         </span>
+        <h1>state {JSON.stringify(user, null, 4)}</h1>
       </header>
 
       <form

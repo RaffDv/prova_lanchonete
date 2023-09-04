@@ -20,7 +20,7 @@ export default function Lanches() {
     }
   }, [])
   return (
-    <main className="flex w-full h-full flex-col items-center">
+    <main className="flex w-full h-full flex-col items-center justify-between">
       {lanches.length > 0 ? (
         <div className="flex flex-col w-full mt-6">
           {lanches.map((lanche) => (

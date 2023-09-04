@@ -20,9 +20,9 @@ export default function Drink({
         <Image src={image} alt="demostração lanche" width={60} height={60} />
         <div className="flex justify-center ">
           {/* Inicio textos */}
-          <div className="flex flex-col justify-center ml-6 items-start gap-2">
+          <div className="flex flex-col justify-center ml-6 items-start gap-2 ">
             <p className="font-bold leading-relaxed text-sm ">{name}</p>
-            <p className="text-xs text-font ">{description}</p>
+            <p className="text-xs text-font max-w-[130px]">{description}</p>
             <p className="font-bold text-sm ">Valor R$ {value}</p>
           </div>
           {/* Final textos */}

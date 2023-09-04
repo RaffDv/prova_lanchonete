@@ -123,15 +123,19 @@ export type AuthUserType = {
   email: string
   pass: string
   privileges: number
+  token: string
 }
 
 export type ActionsProps = {
-  setUser: (user: AuthUserType) => void
+  login: (user: AuthUserType) => void
+  logout: () => void
+  reset: () => void
+  isAdmin: () => boolean
 }
 
 export type StoreProps = {
   state: {
-    user: AuthUserType
+    user: AuthUserType | null
   }
   actions: ActionsProps
 }
