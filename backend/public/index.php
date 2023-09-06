@@ -55,6 +55,7 @@ $app->group('/api', function (RouteCollectorProxy $api)
         $food->get('/',[FoodController::class,'get']);
         $food->get('/{id}',[FoodController::class,'unique']);
         $food->post('/new',[FoodController::class,'new'] );
+        $food->post('/{id}',[FoodController::class,'update']);
     });
     $api->group('/drink',function (RouteCollectorProxy $drink)
     {   
