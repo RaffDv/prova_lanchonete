@@ -32,7 +32,9 @@ export const useAuthStore = create<StoreProps>()(
         },
 
         logout: () => {
-          set(() => ({ state: { user: null } }), true)
+          console.log('execute logout function')
+
+          set({ state: { user: null } })
         },
         reset: () => {
           const token = get().state.user?.token
@@ -51,6 +53,13 @@ export const useAuthStore = create<StoreProps>()(
           }
 
           return false
+        },
+        getToken: () => {
+          const token = get().state.user?.token
+          if (typeof token === 'string') {
+            return token
+          }
+          return ''
         },
       },
     }),

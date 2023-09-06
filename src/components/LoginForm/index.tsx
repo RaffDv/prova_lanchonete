@@ -9,6 +9,7 @@ import Error from '../defaultComponents/Error'
 import Link from 'next/link'
 import { useAuthStore } from '@/store/auth/'
 import { useAuth } from '@/hooks/useGetFromAuth'
+import { useRouter } from 'next/navigation'
 
 type LoginUserType = z.infer<typeof loginUserSchema>
 
@@ -27,8 +28,9 @@ export default function LoginForm() {
     },
   })
   const {
-    actions: { login },
+    actions: { login, getToken },
   } = useAuthStore()
+  const { push } = useRouter()
 
   const user = useAuth(useAuthStore, (state) => state.state.user)
   const handleFormSubmit = async (data: LoginUserType) => {
@@ -38,7 +40,11 @@ export default function LoginForm() {
       privileges: 0,
       token: '',
     })
-    // logout()
+    console.log(JSON.stringify(user, null, 2))
+    const token = getToken()
+    if (token !== '') {
+      push(`/API/user/login?token=${token}`)
+    }
   }
   return (
     <section className="flex flex-col w-full h-full items-center justify-center p-4 relative">
@@ -47,7 +53,6 @@ export default function LoginForm() {
         <span className="text-main font-semibold leading-relaxed text-3xl">
           Entrar
         </span>
-        <h1>state {JSON.stringify(user, null, 4)}</h1>
       </header>
 
       <form

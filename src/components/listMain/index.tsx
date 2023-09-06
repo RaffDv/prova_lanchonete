@@ -11,9 +11,12 @@ export default function ListMain() {
   const [page, setPage] = useState<number>(1)
   const authStore = useAuthStore()
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      authStore.actions.reset()
-    }, 1000 * 30)
+    const intervalId = setInterval(
+      () => {
+        authStore.actions.reset()
+      },
+      1000 * 60 * 30,
+    )
 
     return () => {
       clearInterval(intervalId)

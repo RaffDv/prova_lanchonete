@@ -1,5 +1,8 @@
+import jwtDecode from 'jwt-decode'
+import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { jwtType } from './app/page'
 
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
@@ -13,8 +16,17 @@ export function middleware(request: NextRequest) {
   }
 
   // admin
-  if (path.endsWith('/food/new')) {
-    // pensar em como redirecionar sem ser adm
+  if (path.includes('admin')) {
+    const token = cookies().get('token')?.value
+
+    if (token) {
+      const decoded = jwtDecode<jwtType>(atob(token))
+
+      if (decoded.privileges === 10) {
+        return NextResponse.next()
+      }
+    }
+    return NextResponse.redirect(new URL('/', request.url))
   }
 }
 export const config = {

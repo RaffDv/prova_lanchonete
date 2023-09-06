@@ -20,9 +20,9 @@ export default function Lanches() {
     }
   }, [])
   return (
-    <main className="flex w-full h-full flex-col items-center justify-between">
+    <div className="flex w-full h-full flex-col items-center justify-center mt-6">
       {lanches.length > 0 ? (
-        <div className="flex flex-col w-full mt-6">
+        <>
           {lanches.map((lanche) => (
             <Lanche
               key={crypto.randomUUID()}
@@ -36,7 +36,7 @@ export default function Lanches() {
               valueP={lanche.valueP}
             />
           ))}
-        </div>
+        </>
       ) : (
         <div className="w-full h-full flex items-center justify-center">
           <Triangle
@@ -49,6 +49,6 @@ export default function Lanches() {
           />
         </div>
       )}
-    </main>
+    </div>
   )
 }

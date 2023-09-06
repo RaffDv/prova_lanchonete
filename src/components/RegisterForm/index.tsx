@@ -48,8 +48,6 @@ export default function RegisterForm() {
     if (r.data.success) {
       const email = watch('account.email')
       const pass = watch('account.pass')
-
-      login({ email, pass })
     }
   }
   console.log(errors)

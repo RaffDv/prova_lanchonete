@@ -118,6 +118,18 @@ export const addressSchema = z.object({
   num: z.string(),
 })
 export type addressType = z.infer<typeof addressSchema>
+
+export const UpdateFoodSchema = z.object({
+  name: z.string().min(1, 'Insira um nome válido'),
+  image: z.any(),
+  ingredientsIDs: z.string().array(),
+  valueP: z.string().optional(),
+  valueM: z.string().optional(),
+  valueG: z.string().optional(),
+})
+
+export type UpdateFoodType = z.infer<typeof UpdateFoodSchema>
+
 //  ZUSTEND USER STORE TYPES
 export type AuthUserType = {
   email: string
@@ -131,6 +143,7 @@ export type ActionsProps = {
   logout: () => void
   reset: () => void
   isAdmin: () => boolean
+  getToken: () => string
 }
 
 export type StoreProps = {
