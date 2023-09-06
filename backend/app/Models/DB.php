@@ -91,7 +91,7 @@ class BD
 
             $r = $this->safeQuery($sql, $filter,2);
             
-            if($r){
+            if(is_array($r)){
                 return $r;
             }
             return false;
@@ -167,6 +167,7 @@ class BD
         } 
         catch (PDOException $e) 
         {
+            echo $e->getMessage();
            return null;
         }
     }

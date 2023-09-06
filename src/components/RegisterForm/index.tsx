@@ -10,7 +10,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import Error from '../defaultComponents/Error'
 import api from '@/api'
-import { AuthContext } from '@/contexts/user/auth'
 import Link from 'next/link'
 export type formProps = z.infer<typeof AccountSchema>
 export default function RegisterForm() {
@@ -32,8 +31,6 @@ export default function RegisterForm() {
       },
     },
   })
-
-  const { login } = useContext(AuthContext)
 
   const [page, setPage] = useState<number>(1)
 

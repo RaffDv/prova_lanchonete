@@ -52,7 +52,7 @@ class FoodController
         $this->status = 500;
 
         $r  = $this->db->select_sql('foods');
-        if ($r) {
+        if(is_array($r)){
             $this->status = 200;
             $this->msg = ['data' => $r];
         } else {
@@ -84,31 +84,59 @@ class FoodController
     {
         $this->loadDB();
         $this->status = 500;
-        $body = $request->getParsedBody();
+        $body =json_decode($request->getParsedBody()['data'],true);
         $files = $request->getUploadedFiles()['image'];
         $token = $request->getCookieParams('token')['token'];
-        // $body = json_decode($body,true);
-
         try {
             $id = $this->db->select_sql('foods', ['fields' => 'id'], $args)[0]['id'];
-            if ($this->deleteOldFile($id)) {
+            if(isset($files)){
                 $img = $this->saveFile($this->directory, $files);
-                $body['image'] = $img;
-                try {
-                    if ($this->db->update_sql('foods', $token, $body, $id)) {
-                        $this->msg = ['msg' => 'success update'];
-                    } else {
+                   if( $this->deleteOldFile($id)){
+    
+                       $body["image"] =$img;
+                       print_r($body);
+                       try {
+                           if ($this->db->update_sql('foods', $token, $body, $id)) {
+                               $this->status=200;
+                               $this->msg = ['success' => true];
+                           } 
+                           else
+                           {
+                               $this->status=400;
+                               $this->msg = ['success' => false];
+                           }
+                       } catch (Exception $e) {
+                           $this->status=400;
+                           $this->msg = ['msg' => 'update fail | ERROR:   ' .json_encode($e->getTrace()) .'       '. $e->getMessage()];
+                       }
+                   }
 
-                        $this->msg = ['msg' => 'somenthing error'];
+            }
+            else
+            {
+                try 
+                {
+                    if ($this->db->update_sql('foods', $token, $body, $id)) 
+                    {
+                        $this->status=200;
+                        $this->msg = ['success' => true];
+                    } 
+                    else
+                    {
+                        $this->status=400;
+                        $this->msg = ['success' => false];
                     }
-                } catch (Exception $e) {
-                    $this->msg = ['msg' => 'update fail | ERROR:   ' . $e->getMessage()];
+                } 
+                catch (Exception $e) 
+                {
+                    $this->status=400;
+                    $this->msg = ['msg' => 'update fail | ERROR:   ' .json_encode($e->getTrace()) .'       '. $e->getMessage()];
                 }
             }
+            
 
-            $this->status = 200;
         } catch (Exception $e) {
-            $this->msg['msg'] = 'ERROR - CHECK THE INFORMED DATA';
+            $this->msg['msg'] = 'ERROR - '.$e->getMessage();
             $this->status = 422;
         }
         $response->getBody()->write(json_encode($this->msg));
@@ -121,12 +149,17 @@ class FoodController
     private function saveFile(string $directory, Image $uplFile)
     {
         $extension = pathinfo($uplFile->getClientFilename(), PATHINFO_EXTENSION);
-
         $basename = uniqid();
         $filename = $basename . '.' . $extension;
         $pathTo = $directory . DIRECTORY_SEPARATOR . $filename;
-        $uplFile->moveTo($pathTo);
+        try {
+            $uplFile->moveTo($pathTo);
+            //code...
+        } catch (\Throwable $th) {
+            throw $th;
+        }
         $pathTo = 'http://localhost:4000/foodsImages/' . $filename;
+        // print_r($pathTo)
 
 
         return $pathTo;

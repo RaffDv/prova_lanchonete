@@ -35,7 +35,7 @@ export default function Lanche({
           {/* Inicio textos */}
           <div className="flex flex-col justify-center ml-6 items-start gap-2  ">
             <p className="font-bold">{name}</p>
-            <span className="text-xs w-[130px]  ">{description}</span>
+            <span className="text-xs w-[130px] truncate ">{description}</span>
 
             <p className="font-bold" style={{ fontSize: '12px' }}>
               R$ {valueP || valueM || valueG}

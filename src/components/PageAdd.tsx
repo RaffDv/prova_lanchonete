@@ -3,8 +3,6 @@ import { useContext, useState } from 'react'
 import { foodType } from '@/schemas/global'
 import { ArrowLeft } from '@phosphor-icons/react'
 
-import { CartContext } from '@/contexts/cart'
-
 import { useRouter } from 'next/navigation'
 
 export default function PageAdd({
@@ -16,8 +14,6 @@ export default function PageAdd({
 }) {
   const [value, setValue] = useState<number>(0)
   const [qnt, setQnt] = useState<number>(0)
-
-  const { foodUpdate, drinkUpdate } = useContext(CartContext)
 
   const { push, back } = useRouter()
   // Valor Null, Valor médio, Valor grande
@@ -149,21 +145,21 @@ export default function PageAdd({
           <div>
             <input
               onClick={() => {
-                if (valueB) {
-                  drinkUpdate({
-                    name: data.name,
-                    value,
-                    amount: qnt,
-                    image: data.image,
-                  })
-                } else {
-                  foodUpdate({
-                    name: data.name,
-                    value,
-                    amount: qnt,
-                    image: data.image,
-                  })
-                }
+                // if (valueB) {
+                //   drinkUpdate({
+                //     name: data.name,
+                //     value,
+                //     amount: qnt,
+                //     image: data.image,
+                //   })
+                // } else {
+                //   foodUpdate({
+                //     name: data.name,
+                //     value,
+                //     amount: qnt,
+                //     image: data.image,
+                //   })
+                // }
 
                 push('/')
               }}

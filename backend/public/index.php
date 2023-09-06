@@ -62,6 +62,7 @@ $app->group('/api', function (RouteCollectorProxy $api)
         $drink->get('/',[DrinkController::class,'get']);
         $drink->get('/{id}',[DrinkController::class,'unique']);
         $drink->post('/new',[DrinkController::class,'new'] );
+        $drink->post('/{id}',[DrinkController::class,'update'] );
     });
 
 });

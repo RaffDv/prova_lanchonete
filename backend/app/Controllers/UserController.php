@@ -71,11 +71,11 @@ class UserController{
         
         $this->status=500;
         $data = $request->getParsedBody();
+        $token = $request->getCookieParams('token')['token'];
         
-        $token = $data['token'];
         $values = json_decode($data['data'],true);
         
-        $r = $this->db->update_sql('users',$token,$values);
+        $r = $this->db->update_sql('users',$token,$values,1);
         if($r)
         {
             $this->msg= ['msg'=>'sucess to update'];

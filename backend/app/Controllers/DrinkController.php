@@ -54,7 +54,7 @@ class DrinkController
         $this->status=500;
 
         $r  = $this->db->select_sql('drinks');
-        if($r){
+        if(is_array($r)){
             $this->status=200;
             $this->msg = ['data' => $r];
         }
@@ -83,6 +83,69 @@ class DrinkController
         
         return $response->withStatus($this->status);
     }
+    public function update(Request $request, Response $response, array $args)
+    {
+        $this->loadDB();
+        $this->status = 500;
+        $body =json_decode($request->getParsedBody()['data'],true);
+        $files = $request->getUploadedFiles()['image'];
+        $token = $request->getCookieParams('token')['token'];
+        try {
+            $id = $this->db->select_sql('drinks', ['fields' => 'id'], $args)[0]['id'];
+            if(isset($files)){
+                $img = $this->saveFile($this->directory, $files);
+                   if( $this->deleteOldFile($id)){
+    
+                       $body["image"] =$img;
+                       print_r($body);
+                       try {
+                           if ($this->db->update_sql('drinks', $token, $body, $id)) {
+                               $this->status=200;
+                               $this->msg = ['success' => true];
+                           } 
+                           else
+                           {
+                               $this->status=400;
+                               $this->msg = ['success' => false];
+                           }
+                       } catch (Exception $e) {
+                           $this->status=400;
+                           $this->msg = ['msg' => 'update fail | ERROR:   ' .json_encode($e->getTrace()) .'       '. $e->getMessage()];
+                       }
+                   }
+
+            }
+            else
+            {
+                try 
+                {
+                    if ($this->db->update_sql('drinks', $token, $body, $id)) 
+                    {
+                        $this->status=200;
+                        $this->msg = ['success' => true];
+                    } 
+                    else
+                    {
+                        $this->status=400;
+                        $this->msg = ['success' => false];
+                    }
+                } 
+                catch (Exception $e) 
+                {
+                    $this->status=400;
+                    $this->msg = ['msg' => 'update fail | ERROR:   ' .json_encode($e->getTrace()) .'       '. $e->getMessage()];
+                }
+            }
+            
+
+        } catch (Exception $e) {
+            $this->msg['msg'] = 'ERROR - '.$e->getMessage();
+            $this->status = 422;
+        }
+        $response->getBody()->write(json_encode($this->msg));
+
+        return $response->withStatus($this->status);
+    }
 
 
     
@@ -97,6 +160,20 @@ class DrinkController
         $pathTo = 'http://localhost:4000/drinksImages/' . $filename;
     
         return $pathTo;
+    }
+
+    private function deleteOldFile(int $id)
+    {
+        $url = $this->db->select_sql('drinks', ['fields' => 'image'], ['id' => $id])[0]['image'];
+        $path = parse_url($url, PHP_URL_PATH);
+        $path = '.' . $path;
+
+        try {
+            if (unlink($path)) return true;
+            return false;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     private function loadDB()

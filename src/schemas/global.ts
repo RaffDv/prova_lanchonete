@@ -83,6 +83,15 @@ export const newDrinkSchema = z.object({
   value: z.string(),
 })
 
+export const UpdateDrinkSchema = z.object({
+  name: z.string().min(1, 'Este campo é obrigatório'),
+  description: z.string().min(1, 'Este campo é obrigatório'),
+  image: z.any(),
+  value: z.string(),
+  ingredientsIDs: z.string().array().optional(),
+})
+export type UpdateDrinkType = z.infer<typeof UpdateDrinkSchema>
+
 export const drinkSchema = z.object({
   id: z.number(),
   name: z.string().min(1, 'Este campo é obrigatório'),
@@ -122,7 +131,8 @@ export type addressType = z.infer<typeof addressSchema>
 export const UpdateFoodSchema = z.object({
   name: z.string().min(1, 'Insira um nome válido'),
   image: z.any(),
-  ingredientsIDs: z.string().array(),
+  description: z.string(),
+  ingredientsIDs: z.string().array().optional(),
   valueP: z.string().optional(),
   valueM: z.string().optional(),
   valueG: z.string().optional(),
