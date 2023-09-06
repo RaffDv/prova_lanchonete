@@ -23,7 +23,7 @@ export default function Lanche({
   return (
     <div className=" flex justify-center items-center w-[375px] border-b-2">
       {/* Inicio Lista de lanches */}
-      <div className=" flex mb-4 mt-4  w-full items-center justify-evenly relative">
+      <div className=" flex mb-4 mt-4  w-full justify-center relative">
         <Image
           src={image}
           alt="demostração lanche"
@@ -34,7 +34,7 @@ export default function Lanche({
         <div className="flex justify-center">
           {/* Inicio textos */}
           <div className="flex flex-col justify-center ml-6 items-start gap-2  ">
-            <p className="font-bold">{name}</p>
+            <p className="font-bold truncate w-[120px]">{name}</p>
             <span className="text-xs w-[130px] truncate ">{description}</span>
 
             <p className="font-bold" style={{ fontSize: '12px' }}>
