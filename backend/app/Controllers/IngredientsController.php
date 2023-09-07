@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\UploadedFileInterface as Image;
 
-class FoodController
+class IngredientsController
 {
     private $msg, $status;
     public  \Models\BD | null $db = null;
@@ -21,14 +21,12 @@ class FoodController
         $this->status = 500;
         $body = $request->getParsedBody();
         $body = json_decode($body['data'], true);
-        $files = $request->getUploadedFiles();
 
 
         try {
             try {
-                $data['image'] = $this->saveFile($this->directory, $files['image']);
-                $data = array_merge($data, $body);
-                $r = $this->db->insert_sql('foods', $data);
+                
+                $r = $this->db->insert_sql('ingredients', $body);
                 if ($r) {
                     $this->status = 200;
                     $this->msg = ['msg' => 'success to insert data'];
@@ -85,41 +83,14 @@ class FoodController
         $this->loadDB();
         $this->status = 500;
         $body =json_decode($request->getParsedBody()['data'],true);
-        $files = $request->getUploadedFiles()['image'];
         $token = $request->getCookieParams('token')['token'];
         $decoded = \Models\JWTProvider::decode_token($token);
         if($decoded->privileges === 10) {
             try {
                 $id = $this->db->select_sql('foods', ['fields' => 'id'], $args)[0]['id'];
-                if(isset($files))
-                {
-                    $img = $this->saveFile($this->directory, $files);
-                    if( $this->deleteOldFile($id)){
-    
-                        $body["image"] =$img;
-                        print_r($body);
-                        try {
-                            if ($this->db->update_sql('foods', $body, $id)) {
-                                $this->status=200;
-                                $this->msg = ['success' => true];
-                            } 
-                            else
-                            {
-                                $this->status=400;
-                                $this->msg = ['success' => false];
-                            }
-                        } catch (Exception $e) {
-                            $this->status=400;
-                            $this->msg = ['msg' => 'update fail | ERROR:   ' .json_encode($e->getTrace()) .'       '. $e->getMessage()];
-                        }
-                    }
-                }
-                else
-                {
                     try 
                     {
-                        if ($this->db->update_sql('foods', $body, $id)) 
-                        {
+                        if ($this->db->update_sql('foods', $body, $id)) {
                             $this->status=200;
                             $this->msg = ['success' => true];
                         } 
@@ -134,8 +105,6 @@ class FoodController
                         $this->status=400;
                         $this->msg = ['msg' => 'update fail | ERROR:   ' .json_encode($e->getTrace()) .'       '. $e->getMessage()];
                     }
-                }
-
             } catch (Exception $e) {
                 $this->msg['msg'] = 'ERROR - '.$e->getMessage();
                 $this->status = 422;
@@ -152,40 +121,6 @@ class FoodController
         return $response->withStatus($this->status);
     }
 
-
-
-    private function saveFile(string $directory, Image $uplFile)
-    {
-        $extension = pathinfo($uplFile->getClientFilename(), PATHINFO_EXTENSION);
-        $basename = uniqid();
-        $filename = $basename . '.' . $extension;
-        $pathTo = $directory . DIRECTORY_SEPARATOR . $filename;
-        try {
-            $uplFile->moveTo($pathTo);
-            //code...
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-        $pathTo = 'http://localhost:4000/foodsImages/' . $filename;
-        // print_r($pathTo)
-
-
-        return $pathTo;
-    }
-
-    private function deleteOldFile(int $id)
-    {
-        $url = $this->db->select_sql('foods', ['fields' => 'image'], ['id' => $id])[0]['image'];
-        $path = parse_url($url, PHP_URL_PATH);
-        $path = '.' . $path;
-
-        try {
-            if (unlink($path)) return true;
-            return false;
-        } catch (Exception $e) {
-            return false;
-        }
-    }
 
     private function loadDB()
     {

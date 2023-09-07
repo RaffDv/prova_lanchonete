@@ -100,13 +100,9 @@ class BD
         }
     }
 
-    public function update_sql(string $table,$token,$data=[],$itemID)
+    public function update_sql(string $table,$data=[],$itemID)
     {
-        $decoded =  \Models\JWTProvider::decode_token($token);
-        $filter = ["email" =>$decoded->email];
        
-        $privs = $this->select_sql('users', ['fields' => 'privileges'],$filter )[0]['privileges'];
-        if( $privs == 10){
             try {
                 $sql = "UPDATE {$table}";
     
@@ -119,6 +115,7 @@ class BD
                 }
     
                 $sql .= " WHERE id = {$itemID}";
+
                 $r = $this->safeQuery($sql,$data);
                 if($r) return true;
                 return false;
@@ -127,10 +124,7 @@ class BD
     
             }
 
-        }
-        else{
-            echo $privs;
-        }
+        
         return false;
     }
     

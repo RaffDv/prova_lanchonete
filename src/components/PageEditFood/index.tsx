@@ -35,7 +35,7 @@ export default function PageEditFood({ id }: { id: string }) {
     formData.append('data', JSON.stringify(data))
 
     axios({
-      method: 'post',
+      method: 'put',
       url: `http://localhost:4000/api/food/${id}`,
       data: formData,
       withCredentials: true,
