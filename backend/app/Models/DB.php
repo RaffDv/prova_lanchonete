@@ -91,7 +91,7 @@ class BD
 
             $r = $this->safeQuery($sql, $filter,2);
             
-            if($r){
+            if(is_array($r)){
                 return $r;
             }
             return false;
@@ -100,34 +100,32 @@ class BD
         }
     }
 
-    public function update_sql(string $table,$token,$data=[])
+    public function update_sql(string $table,$data=[],$itemID)
     {
-        $decoded =  \Models\JWTProvider::decode_token($token);
-        $filter = ["email" =>$decoded->email];
-        $userID = $this->select_sql($table,['fields' => 'id'],$filter);
-        try {
-            $sql = "UPDATE {$table}";
-
-            if (!empty($data)) {
-                $whereConditions = [];
-                foreach ($data as $field => $value) {
-                    $whereConditions[] = " $field = :$field";
+       
+            try {
+                $sql = "UPDATE {$table}";
+    
+                if (!empty($data)) {
+                    $whereConditions = [];
+                    foreach ($data as $field => $value) {
+                        $whereConditions[] = " $field = :$field";
+                    }
+                    $sql .=" SET".implode(",", $whereConditions);
                 }
-                $sql .=" SET".implode(",", $whereConditions);
+    
+                $sql .= " WHERE id = {$itemID}";
+
+                $r = $this->safeQuery($sql,$data);
+                if($r) return true;
+                return false;
+            } catch (PDOException $e) {
+                echo "ERROR   " . $e->getMessage();
+    
             }
 
-            if (isset($userID[0])) {
-                
-                $sql .= " WHERE id = :id"; 
-                $data['id'] = $userID[0]['id'];
-            }
-            $r = $this->safeQuery($sql,$data);
-            if($r) return true;
-            return false;
-        } catch (PDOException $e) {
-            echo "ERROR   " . $e->getMessage();
-
-        }
+        
+        return false;
     }
     
 
@@ -163,6 +161,7 @@ class BD
         } 
         catch (PDOException $e) 
         {
+            echo $e->getMessage();
            return null;
         }
     }

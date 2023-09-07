@@ -6,14 +6,14 @@ import { useForm } from 'react-hook-form'
 import { loginUserSchema } from '@/schemas/global'
 import { z } from 'zod'
 import Error from '../defaultComponents/Error'
-import { useContext } from 'react'
-import { AuthContext } from '@/contexts/user/auth'
 import Link from 'next/link'
+import { useAuthStore } from '@/store/auth/'
+import { useAuth } from '@/hooks/useGetFromAuth'
+import { useRouter } from 'next/navigation'
 
 type LoginUserType = z.infer<typeof loginUserSchema>
 
 export default function LoginForm() {
-  const { login } = useContext(AuthContext)
   const {
     handleSubmit,
     register,
@@ -27,13 +27,25 @@ export default function LoginForm() {
       pass: '',
     },
   })
+  const {
+    actions: { login, getToken },
+  } = useAuthStore()
+  const { push } = useRouter()
 
+  const user = useAuth(useAuthStore, (state) => state.state.user)
   const handleFormSubmit = async (data: LoginUserType) => {
-    console.log(JSON.stringify(data, null, 4))
-
-    login({ email: data.email, pass: data.pass })
+    await login({
+      email: data.email,
+      pass: data.pass,
+      privileges: 0,
+      token: '',
+    })
+    console.log(JSON.stringify(user, null, 2))
+    const token = getToken()
+    if (token !== '') {
+      push(`/API/user/login?token=${token}`)
+    }
   }
-
   return (
     <section className="flex flex-col w-full h-full items-center justify-center p-4 relative">
       <header className="m-3 mb-11 flex flex-col gap-2 items-center">

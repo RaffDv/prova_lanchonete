@@ -3,7 +3,7 @@ import lupa from '@/image/lupa.svg'
 
 export default function BarraPesquisa() {
   return (
-    <main className="flex w-full flex-col items-center">
+    <div className="flex w-full flex-col items-center">
       {/* Barra de pesquisa */}
       <div className="relative flex w-full mt-8 items-center justify-center">
         <input
@@ -29,7 +29,6 @@ export default function BarraPesquisa() {
           alt="lupa"
         />
       </div>
-      {/* Fim da Barra de pesquisa */}
-    </main>
+    </div>
   )
 }

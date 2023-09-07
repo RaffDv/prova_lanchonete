@@ -3,18 +3,15 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import logo from '@/image/logo.svg'
 import CartFood from '@/components/cart/cartFood/page'
-import { CartContext } from '@/contexts/cart'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
 export default function CartMain() {
   const router = useRouter()
-  const { food, drink } = useContext(CartContext)
   const [total, setTotal] = useState<number>(0)
   useEffect(() => {
-    let totalPrice = 0
-    food.map((item) => (totalPrice += item.value * item.amount))
-    drink.map((item) => (totalPrice += item.value * item.amount))
+    const totalPrice = 0
+
     setTotal(totalPrice)
   })
   return (

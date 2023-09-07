@@ -9,6 +9,7 @@ require_once __DIR__.'/../app/Models/DB.php';
 use App\Controllers\FoodController;
 use App\Controllers\UserController;
 use App\Controllers\DrinkController;
+use App\Controllers\IngredientsController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
@@ -16,7 +17,7 @@ use Slim\Routing\RouteCollectorProxy;
 
 $app = AppFactory::create();
 
-
+$app->addBodyParsingMiddleware();
 $app->options('/{routes:.+}', function ($request, $response, $args) {
     return $response;
 });
@@ -45,8 +46,8 @@ $app->group('/api', function (RouteCollectorProxy $api)
         $user->get('/',[UserController::class, 'get']);
         $user->get('/address',[UserController::class,'address']);
         $user->get('/{id}',[UserController::class, 'unique']);
+        $user->put('/update',[UserController::class,'update']);
         $user->post('/new',[UserController::class,'new']);
-        $user->post('/update',[UserController::class,'update']);
         $user->post('/login',[UserController::class,'login']);
     });
 
@@ -55,12 +56,21 @@ $app->group('/api', function (RouteCollectorProxy $api)
         $food->get('/',[FoodController::class,'get']);
         $food->get('/{id}',[FoodController::class,'unique']);
         $food->post('/new',[FoodController::class,'new'] );
+        $food->put('/{id}',[FoodController::class,'update']);
     });
     $api->group('/drink',function (RouteCollectorProxy $drink)
     {   
         $drink->get('/',[DrinkController::class,'get']);
         $drink->get('/{id}',[DrinkController::class,'unique']);
         $drink->post('/new',[DrinkController::class,'new'] );
+        $drink->put('/{id}',[DrinkController::class,'update'] );
+    });
+    $api->group('/ingredients',function (RouteCollectorProxy $ing)
+    {   
+        $ing->get('/',[IngredientsController::class,'get']);
+        $ing->get('/{id}',[IngredientsController::class,'unique']);
+        $ing->post('/new',[IngredientsController::class,'new'] );
+        $ing->put('/{id}',[IngredientsController::class,'update'] );
     });
 
 });
