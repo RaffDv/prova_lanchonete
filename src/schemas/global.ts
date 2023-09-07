@@ -94,9 +94,25 @@ export const drinkSchema = z.object({
 export type drinkType = z.infer<typeof drinkSchema>
 
 export type newUserType = z.infer<typeof newUserSchema>
+export const userSchema = z.object({
+  id: z.number(),
+  user: z.string(),
+  email: z.string(),
+  pass: z.string(),
+  privileges: z.number(),
+  country: z.string(),
+  state: z.string(),
+  city: z.string(),
+  district: z.string(),
+  street: z.string(),
+  num: z.number(),
+})
+
+export type userType = z.infer<typeof userSchema>
 export type AuthUserType = {
   email: string
   pass: string
+  privileges?: number
 }
 
 export const addressSchema = z.object({

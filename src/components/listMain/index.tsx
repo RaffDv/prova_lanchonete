@@ -1,29 +1,34 @@
 'use client'
 import Base from '@/components/Base'
-import Car from '@/components/Car'
-import Config from '@/components/Config'
 import Lanches from '@/components/Lanches'
 import Bebidas from '@/components/Bebidas'
-import { useState } from 'react'
-import Link from 'next/link'
+import { useContext, useEffect, useState } from 'react'
 import BarraPesquisa from '../BarraPesquisa'
+import DropdownMenu from '../Dropdown'
+import { AuthContext } from '@/contexts/user/auth'
 
-export default function ListMain({ UserEmail }: { UserEmail: string }) {
+export default function ListMain({
+  UserEmail,
+  userPriv,
+}: {
+  UserEmail: string
+  userPriv: number
+}) {
   const [page, setPage] = useState<number>(1)
+  const { setPrivilegesLevel } = useContext(AuthContext)
 
+  useEffect(() => {
+    setPrivilegesLevel(userPriv)
+    console.log('update user privileges')
+  }, [])
   return (
-    <main className="flex w-full h-full flex-col justify-center items-center">
+    <main className="flex w-screen h-screen flex-col justify-center items-center">
       {/* Inicio navbar */}
       <nav className="relative flex w-full h-10  m-4 items-center justify-around">
         <div className="flex items-center justify-between w-full">
           <Base />
           <div className="flex m-4 gap-4">
-            <Link href={`/user/${UserEmail}/cart`}>
-              <Car />
-            </Link>
-            <Link href={`/user/${UserEmail}/edit/`}>
-              <Config />
-            </Link>
+            <DropdownMenu UserEmail={UserEmail} />
           </div>
         </div>
       </nav>

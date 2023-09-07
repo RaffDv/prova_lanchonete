@@ -19,7 +19,7 @@ export default function Home() {
 
   return (
     <>
-      <ListMain UserEmail={UserEmail} />
+      <ListMain UserEmail={UserEmail} userPriv={isAdmin.privileges} />
       {isLogged && isAdmin.privileges === 10 && <NewItemButton />}
     </>
   )

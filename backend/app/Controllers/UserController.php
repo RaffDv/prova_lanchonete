@@ -31,7 +31,7 @@ class UserController{
         
         $this->status=500;
         try {
-            $r =json_encode( $this->db->select_sql('users',['fields'=>'*'],$args));
+            $r =json_encode( ['data' => $this->db->select_sql('users',['fields'=>'*'],$args)]);
             $this->status = 200;
         } catch (Exception $e) {
             $r = 'ERROR - CHECK THE INFORMED DATA';
