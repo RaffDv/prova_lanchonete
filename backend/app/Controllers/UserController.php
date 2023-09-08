@@ -71,15 +71,19 @@ class UserController{
         
         $this->status=500;
         $data = $request->getParsedBody();
+        $token = $request->getCookieParams('token')['token'];
+        $decoded = \Models\JWTProvider::decode_token($token);
+        $id = $this->db->select_sql('users',['fields'=>'id'],['email'=> $decoded->email])[0]['id']; 
         
-        $token = $data['token'];
         $values = json_decode($data['data'],true);
+
         
-        $r = $this->db->update_sql('users',$token,$values);
+       try {
+        $r = $this->db->update_sql('users',$values,$id);
         if($r)
         {
             $this->msg= ['msg'=>'sucess to update'];
-            $this->status = 200;
+            $this->status = 201;
         }
         else
         {
@@ -87,6 +91,10 @@ class UserController{
             $this->msg= ['msg'=>'fail to update'];
             $this->status = 422;
         }
+       } catch (Exception $e) {
+        $this->msg['msg'] = "ERROR | {$e->getMessage()}";
+        $this->status=400;
+       }
         $response->getBody()->write(json_encode($this->msg));
         return $response->withStatus($this->status);
     }

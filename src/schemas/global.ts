@@ -83,6 +83,15 @@ export const newDrinkSchema = z.object({
   value: z.string(),
 })
 
+export const UpdateDrinkSchema = z.object({
+  name: z.string().min(1, 'Este campo é obrigatório'),
+  description: z.string().min(1, 'Este campo é obrigatório'),
+  image: z.any(),
+  value: z.string(),
+  ingredientsIDs: z.string().array().optional(),
+})
+export type UpdateDrinkType = z.infer<typeof UpdateDrinkSchema>
+
 export const drinkSchema = z.object({
   id: z.number(),
   name: z.string().min(1, 'Este campo é obrigatório'),
@@ -107,13 +116,7 @@ export const userSchema = z.object({
   street: z.string(),
   num: z.number(),
 })
-
 export type userType = z.infer<typeof userSchema>
-export type AuthUserType = {
-  email: string
-  pass: string
-  privileges?: number
-}
 
 export const addressSchema = z.object({
   country: z.string(),
@@ -124,3 +127,38 @@ export const addressSchema = z.object({
   num: z.string(),
 })
 export type addressType = z.infer<typeof addressSchema>
+
+export const UpdateFoodSchema = z.object({
+  name: z.string().min(1, 'Insira um nome válido'),
+  image: z.any(),
+  description: z.string(),
+  ingredientsIDs: z.string().array().optional(),
+  valueP: z.string().optional(),
+  valueM: z.string().optional(),
+  valueG: z.string().optional(),
+})
+
+export type UpdateFoodType = z.infer<typeof UpdateFoodSchema>
+
+//  ZUSTEND USER STORE TYPES
+export type AuthUserType = {
+  email: string
+  pass: string
+  privileges: number
+  token: string
+}
+
+export type ActionsProps = {
+  login: (user: AuthUserType) => void
+  logout: () => void
+  reset: () => void
+  isAdmin: () => boolean
+  getToken: () => string
+}
+
+export type StoreProps = {
+  state: {
+    user: AuthUserType | null
+  }
+  actions: ActionsProps
+}
