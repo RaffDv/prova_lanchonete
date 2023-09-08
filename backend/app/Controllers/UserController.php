@@ -14,22 +14,27 @@ class UserController{
         
         $this->loadDB();
         $header = $request->getHeaders();
-        print_r($header);
     
         
         $filter = $request->getQueryParams();
-        $data = $this->db->select_sql('users', ['fields' => '*'], $filter);
-        $parsedData = json_encode($data);
-        $response->getBody()->write($parsedData);
+        try {
+            $data = $this->db->select_sql('users', ['fields' => '*'], $filter);
+            $this->msg['data'] = $data;
+            $this->status=200;
+        } catch (Exception $e) {
+            $this->msg['data'] = 'ERROR     '.$e->getMessage();
+            $this->status=400;
+        }
         
-        return $response->withStatus(200);
+        $response->getBody()->write(json_encode($this->msg));
+        return $response->withStatus($this->status);
     }
     
     public function unique(Request $request, Response $response,array $args) 
     {
         $this->loadDB();
-        
         $this->status=500;
+
         try {
             $r =json_encode( ['data' => $this->db->select_sql('users',['fields'=>'*'],$args)]);
             $this->status = 200;

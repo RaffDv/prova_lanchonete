@@ -1,6 +1,4 @@
 <?php
-
-
 require __DIR__ . '/../vendor/autoload.php';
 
 require_once __DIR__.'/../app/Models/cred.php';
@@ -45,10 +43,10 @@ $app->group('/api', function (RouteCollectorProxy $api)
     {
         $user->get('/',[UserController::class, 'get']);
         $user->get('/address',[UserController::class,'address']);
-        $user->get('/{id}',[UserController::class, 'unique']);
-        $user->put('/update',[UserController::class,'update']);
+        $user->get('/{email}',[UserController::class, 'unique']);
         $user->post('/new',[UserController::class,'new']);
         $user->post('/login',[UserController::class,'login']);
+        $user->post('/update',[UserController::class,'update']);
     });
 
     $api->group('/food',function (RouteCollectorProxy $food)
@@ -56,21 +54,21 @@ $app->group('/api', function (RouteCollectorProxy $api)
         $food->get('/',[FoodController::class,'get']);
         $food->get('/{id}',[FoodController::class,'unique']);
         $food->post('/new',[FoodController::class,'new'] );
-        $food->put('/{id}',[FoodController::class,'update']);
+        $food->post('/{id}',[FoodController::class,'update']);
     });
     $api->group('/drink',function (RouteCollectorProxy $drink)
     {   
         $drink->get('/',[DrinkController::class,'get']);
         $drink->get('/{id}',[DrinkController::class,'unique']);
         $drink->post('/new',[DrinkController::class,'new'] );
-        $drink->put('/{id}',[DrinkController::class,'update'] );
+        $drink->post('/{id}',[DrinkController::class,'update'] );
     });
-    $api->group('/ingredients',function (RouteCollectorProxy $ing)
+    $api->group('/ingredient',function (RouteCollectorProxy $ing)
     {   
         $ing->get('/',[IngredientsController::class,'get']);
         $ing->get('/{id}',[IngredientsController::class,'unique']);
         $ing->post('/new',[IngredientsController::class,'new'] );
-        $ing->put('/{id}',[IngredientsController::class,'update'] );
+        $ing->post('/{id}',[IngredientsController::class,'update'] );
     });
 
 });

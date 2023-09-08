@@ -13,6 +13,7 @@
 import { newFoodType } from '@/components/NewFoodForm'
 import {
   AuthUserType,
+  IngredientType,
   addressType,
   drinkType,
   foodType,
@@ -166,6 +167,13 @@ export default {
       return await basicFetch('GET', `drink/${id}`, {}, {})
     },
   },
+  ingredient: {
+    get: async (): Promise<
+      resultType<{ data: IngredientType[]; msg?: string }>
+    > => {
+      return await basicFetch('GET', 'ingredient/', {}, {})
+    },
+  },
   user: {
     login: async ({
       email,
@@ -209,7 +217,7 @@ export default {
     }: {
       email: string
     }): Promise<resultType<{ data: userType; msg?: string }>> => {
-      return await basicFetch('GET', `user/${email}`, {}, {})
+      return await basicFetch('GET', `user/`, { email }, {})
     },
   },
 }

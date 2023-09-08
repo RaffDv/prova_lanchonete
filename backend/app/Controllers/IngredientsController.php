@@ -13,7 +13,6 @@ class IngredientsController
 {
     private $msg, $status;
     public  \Models\BD | null $db = null;
-    private $directory = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'foodsImages';
 
     public function new(Request $request, Response $response)
     {
@@ -49,7 +48,7 @@ class IngredientsController
         $this->loadDB();
         $this->status = 500;
 
-        $r  = $this->db->select_sql('foods');
+        $r  = $this->db->select_sql('ingredients');
         if(is_array($r)){
             $this->status = 200;
             $this->msg = ['data' => $r];
@@ -66,7 +65,7 @@ class IngredientsController
 
         $this->status = 500;
         try {
-            $this->msg = json_encode(['data' => $this->db->select_sql('foods', ['fields' => '*'], $args)[0]]);
+            $this->msg = json_encode(['data' => $this->db->select_sql('ingredients', ['fields' => '*'], $args)[0]]);
 
             $this->status = 200;
         } catch (Exception $e) {
@@ -77,20 +76,19 @@ class IngredientsController
 
         return $response->withStatus($this->status);
     }
-
+    //nao testado
     public function update(Request $request, Response $response, array $args)
     {
         $this->loadDB();
-        $this->status = 500;
+        $this->status = 200;
         $body =json_decode($request->getParsedBody()['data'],true);
         $token = $request->getCookieParams('token')['token'];
         $decoded = \Models\JWTProvider::decode_token($token);
         if($decoded->privileges === 10) {
             try {
-                $id = $this->db->select_sql('foods', ['fields' => 'id'], $args)[0]['id'];
                     try 
                     {
-                        if ($this->db->update_sql('foods', $body, $id)) {
+                        if ($this->db->update_sql('ingredients', $body, $args['id'])) {
                             $this->status=200;
                             $this->msg = ['success' => true];
                         } 

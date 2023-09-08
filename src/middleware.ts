@@ -1,5 +1,4 @@
 import jwtDecode from 'jwt-decode'
-import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { jwtType } from './app/page'
@@ -17,7 +16,9 @@ export function middleware(request: NextRequest) {
 
   // admin
   if (path.includes('admin')) {
-    const token = cookies().get('token')?.value
+    console.log('admin midd')
+
+    const token = request.cookies.get('token')?.value
 
     if (token) {
       const decoded = jwtDecode<jwtType>(atob(token))

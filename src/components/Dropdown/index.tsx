@@ -48,7 +48,7 @@ export default function DropdownMenu() {
                   {user?.email ? (
                     <>
                       <Item>
-                        <Link href={'#'}>Perfil</Link>
+                        <Link href={`#`}>Perfil</Link>
                       </Item>
                       <Item>
                         <Link href={'#'}>Carrinho</Link>

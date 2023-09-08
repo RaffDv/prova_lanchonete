@@ -19,7 +19,7 @@ export const SelectIng = forwardRef<HTMLInputElement, inputProps>(
           type="checkbox"
           id={ident}
           className="peer hidden"
-          checked={reqState}
+          defaultChecked={reqState}
           onClick={() => setRetState(!reqState)}
           value={inpValue}
           ref={ref}

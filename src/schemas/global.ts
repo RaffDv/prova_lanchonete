@@ -57,7 +57,7 @@ export const JwtSchema = z.object({
 export const newFoodSchema = z.object({
   name: z.string().min(1, 'Este campo é obrigatório'),
   description: z.string().min(1, 'Este campo é obrigatório'),
-  ingredients: z.string().min(1, 'Este campo é obrigatório'),
+  ingredientsIDs: z.string().array(),
   image: z.any(),
   size: z.string().array().optional(),
   valueP: z.string().optional(),
@@ -68,11 +68,16 @@ export const foodSchema = z.object({
   id: z.number(),
   name: z.string().min(1, 'Este campo é obrigatório'),
   description: z.string().min(1, 'Este campo é obrigatório'),
-  ingredients: z.string().min(1, 'Este campo é obrigatório').optional(),
   image: z.string(),
   valueP: z.string().optional(),
   valueM: z.string().optional(),
   valueG: z.string().optional(),
+  ingredients: z
+    .object({
+      name: z.string(),
+      id: z.string(),
+    })
+    .array(),
 })
 export type foodType = z.infer<typeof foodSchema>
 
@@ -81,6 +86,7 @@ export const newDrinkSchema = z.object({
   description: z.string(),
   image: z.any(),
   value: z.string(),
+  ingredientsIDs: z.string().array(),
 })
 
 export const UpdateDrinkSchema = z.object({
@@ -88,7 +94,7 @@ export const UpdateDrinkSchema = z.object({
   description: z.string().min(1, 'Este campo é obrigatório'),
   image: z.any(),
   value: z.string(),
-  ingredientsIDs: z.string().array().optional(),
+  ingredientsIDs: z.string().array(),
 })
 export type UpdateDrinkType = z.infer<typeof UpdateDrinkSchema>
 
@@ -98,6 +104,12 @@ export const drinkSchema = z.object({
   description: z.string().min(1, 'Este campo é obrigatório'),
   image: z.string(),
   value: z.string(),
+  ingredients: z
+    .object({
+      name: z.string(),
+      id: z.string(),
+    })
+    .array(),
 })
 
 export type drinkType = z.infer<typeof drinkSchema>
@@ -139,6 +151,13 @@ export const UpdateFoodSchema = z.object({
 })
 
 export type UpdateFoodType = z.infer<typeof UpdateFoodSchema>
+
+export const IngredientSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  amount: z.string(),
+})
+export type IngredientType = z.infer<typeof IngredientSchema>
 
 //  ZUSTEND USER STORE TYPES
 export type AuthUserType = {
