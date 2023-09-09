@@ -7,11 +7,8 @@ export default function BarraPesquisa() {
       {/* Barra de pesquisa */}
       <div className="relative flex w-full mt-8 items-center justify-center">
         <input
-          className={`bg-cyan-figma w-60 h-7 border-none absolute`}
+          className="bg-cyan-figma w-60 h-7 border-none absolute rounded-3xl font-bold text-sm"
           style={{
-            borderRadius: '20px',
-            fontWeight: 'bold',
-            fontSize: '14px',
             backgroundSize: '15px 15px',
             backgroundPosition: 'right center',
             backgroundRepeat: 'no-repeat',
