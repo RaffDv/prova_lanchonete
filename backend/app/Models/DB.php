@@ -63,7 +63,7 @@ class BD
                 }
                 $sql .= '(' . implode(",", $whereConditions) . ')';
             }
-    
+
             $r = $this->safeQuery($sql, $values);
             if($r){
                 return true;
@@ -139,6 +139,7 @@ class BD
                 }
     
                 $sql .= " WHERE id = {$itemID}";
+                
                 $r = $this->safeQuery($sql,$data);
                 if($r) return true;
                 return false;

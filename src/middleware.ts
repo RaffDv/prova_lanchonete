@@ -16,8 +16,6 @@ export function middleware(request: NextRequest) {
 
   // admin
   if (path.includes('admin')) {
-    console.log('admin midd')
-
     const token = request.cookies.get('token')?.value
 
     if (token) {
@@ -29,7 +27,24 @@ export function middleware(request: NextRequest) {
     }
     return NextResponse.redirect(new URL('/', request.url))
   }
+
+  if (path.includes('food' || 'drink') && !path.includes('admin')) {
+    console.log('food middleware')
+
+    const token = request.cookies.get('token')?.value
+
+    if (token) {
+      return NextResponse.next()
+    }
+    return NextResponse.redirect(new URL('/user/login', request.url))
+  }
 }
 export const config = {
-  matcher: ['/API/user/:path*', '/user/:path*', '/admin/:path*'],
+  matcher: [
+    '/API/user/:path*',
+    '/user/:path*',
+    '/admin/:path*',
+    '/food/:path*',
+    '/drink/:path*',
+  ],
 }

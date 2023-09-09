@@ -31,7 +31,6 @@ export default function PageAdd({
       </div>
       <div className="flex flex-col m-3 mt-6">
         <p className="text-font font-bold">{data.name}</p>
-        <p className="text-font text-xs">{data.ingredients}</p>
       </div>
       <div className="flex m-3 flex-col justify-center mt-6">
         <div className="flex items-center">

@@ -8,6 +8,7 @@ use App\Controllers\FoodController;
 use App\Controllers\UserController;
 use App\Controllers\DrinkController;
 use App\Controllers\IngredientsController;
+use App\Controllers\OrderController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
@@ -69,6 +70,12 @@ $app->group('/api', function (RouteCollectorProxy $api)
         $ing->get('/{id}',[IngredientsController::class,'unique']);
         $ing->post('/new',[IngredientsController::class,'new'] );
         $ing->post('/{id}',[IngredientsController::class,'update'] );
+    });
+    $api->group('/order',function (RouteCollectorProxy $order)
+    {   
+        $order->get('/',[OrderController::class,'unique']);
+        $order->post('/new',[OrderController::class,'new'] );
+        $order->post('/{id}',[OrderController::class,'update'] );
     });
 
 });

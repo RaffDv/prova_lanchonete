@@ -8,7 +8,6 @@ import { useAuth } from '@/hooks/useGetFromAuth'
 export default function Lanche({
   id,
   description,
-  ingredients,
   name,
   image,
   valueG,
