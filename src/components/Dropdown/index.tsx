@@ -1,14 +1,21 @@
 'use client'
+import api from '@/api'
 import { useAuth } from '@/hooks/useGetFromAuth'
+import { userType } from '@/schemas/global'
 import { useAuthStore } from '@/store/auth'
 import { List } from '@phosphor-icons/react'
 import * as DropMenu from '@radix-ui/react-dropdown-menu'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ReactNode, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
-export default function DropdownMenu() {
+export default function DropdownMenu({
+  params,
+}: {
+  params: { email: string }
+}) {
+  const [data, setData] = useState<userType>({} as userType)
   const [open, setOpen] = useState<boolean>(false)
   const {
     actions: { logout },
@@ -17,6 +24,18 @@ export default function DropdownMenu() {
   const user = useAuth(useAuthStore, (state) => state.state.user)
   const { push } = useRouter()
 
+  const getdata = async () => {
+    const r = await api.user.unique({ email: params.email })
+    if (r.success) {
+      setData(r.data.data)
+    }
+  }
+
+  useEffect(() => {
+    getdata()
+  }, [])
+
+  console.log(params)
   return (
     <div className="relative inline-block text-left">
       <DropMenu.Root open={open} onOpenChange={setOpen}>
@@ -48,7 +67,7 @@ export default function DropdownMenu() {
                   {user?.email ? (
                     <>
                       <Item>
-                        <Link href={'#'}>Perfil</Link>
+                        <Link href={`user/${user.email}/edit`}>Perfil</Link>
                       </Item>
                       <Item>
                         <Link href={'#'}>Carrinho</Link>

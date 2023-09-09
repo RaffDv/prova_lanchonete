@@ -209,7 +209,7 @@ export default {
     }: {
       email: string
     }): Promise<resultType<{ data: userType; msg?: string }>> => {
-      return await basicFetch('GET', `user/${email}`, {}, {})
+      return await basicFetch('GET', `user/`, { email }, {})
     },
   },
 }
