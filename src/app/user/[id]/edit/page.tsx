@@ -44,8 +44,8 @@ export default function Page({ params }: { params: { email: string } }) {
   const { back } = useRouter()
 
   const {
-    handleSubmit,
     register,
+    handleSubmit,
     formState: { errors },
   } = useForm<FormProps>({
     mode: 'all',
