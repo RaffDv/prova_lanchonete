@@ -74,8 +74,10 @@ $app->group('/api', function (RouteCollectorProxy $api)
     $api->group('/order',function (RouteCollectorProxy $order)
     {   
         $order->get('/',[OrderController::class,'unique']);
+        $order->post('/clear',[OrderController::class,'clear']);
         $order->post('/new',[OrderController::class,'new'] );
-        $order->post('/{id}',[OrderController::class,'update'] );
+        $order->post('/{id}',[OrderController::class,'update']);
+        $order->delete('/{id}/delete',[OrderController::class,'delete']);
     });
 
 });

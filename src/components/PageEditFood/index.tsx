@@ -155,7 +155,7 @@ export default function PageEditFood({ id }: { id: string }) {
               <div className="flex justify-around flex-wrap gap-y-1.5 gap-x-1 border border-gray-300 p-1.5 rounded-md max-h-32 overflow-y-auto">
                 {/* ingredients */}
                 {ingredients.map((ing) => {
-                  const refv = data.ingredients.findIndex(
+                  const refv = data.ingredients?.findIndex(
                     (itm) => itm.id === ing.id,
                   )
                   return (

@@ -1,19 +1,18 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { foodType } from '@/schemas/global'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/auth'
-import { useAuth } from '@/hooks/useGetFromAuth'
+import api from '@/api'
+import { Trash } from '@phosphor-icons/react'
 
 export default function Lanche({
-  id,
-  description,
-  name,
-  image,
-  valueG,
-  valueM,
-  valueP,
-}: foodType) {
+  food,
+  orderID,
+}: {
+  food: foodType
+  orderID?: number
+}) {
   const pathname = usePathname()
   const {
     actions: { isAdmin },
@@ -24,7 +23,7 @@ export default function Lanche({
       {/* Inicio Lista de lanches */}
       <div className=" flex mb-4 mt-4  w-full justify-center relative">
         <Image
-          src={image}
+          src={food.image}
           alt="demostração lanche"
           width={80}
           height={80}
@@ -33,11 +32,13 @@ export default function Lanche({
         <div className="flex justify-center">
           {/* Inicio textos */}
           <div className="flex flex-col justify-center ml-6 items-start gap-2  ">
-            <p className="font-bold truncate w-[120px]">{name}</p>
-            <span className="text-xs w-[130px] truncate ">{description}</span>
+            <p className="font-bold truncate w-[120px]">{food.name}</p>
+            <span className="text-xs w-[130px] truncate ">
+              {food.description}
+            </span>
 
             <p className="font-bold" style={{ fontSize: '12px' }}>
-              R$ {valueP || valueM || valueG}
+              R$ {food.valueP || food.valueM || food.valueG}
             </p>
           </div>
 
@@ -47,18 +48,35 @@ export default function Lanche({
             <div className="relative flex items-end mb-2 right-0">
               {isAdmin() ? (
                 <Link
-                  href={`/admin/food/${id}/edit`}
+                  href={`/admin/food/${food.id}/edit`}
                   className="flex font-medium items-center justify-center border rounded-full w-fit h-fit px-2 text-xs bg-buttonBg flex-grow-1 max-w-[130px] overflow-ellipsis"
                 >
                   Editar
                 </Link>
               ) : (
-                <Link
-                  href={`/food/${id}/add`}
-                  className="flex font-medium items-center justify-center border rounded-full w-fit h-fit px-2 text-xs bg-buttonBg flex-grow-1 max-w-[130px] overflow-ellipsis"
-                >
-                  Adicionar
-                </Link>
+                <>
+                  {pathname.includes('cart') ? (
+                    <button
+                      onClick={async () => {
+                        const r = await api.order.remove(orderID as number)
+                        if (r.success) {
+                          console.log('refresh')
+                          window.location.reload()
+                        }
+                      }}
+                      className="flex font-medium items-center justify-center w-fit h-fit px-2 text-xs  flex-grow-1 max-w-[130px] overflow-ellipsis"
+                    >
+                      <Trash size={16} color="#f42a2a" weight="thin" />
+                    </button>
+                  ) : (
+                    <Link
+                      href={`/food/${food.id}/add`}
+                      className="flex font-medium items-center justify-center border rounded-full w-fit h-fit px-2 text-xs bg-buttonBg flex-grow-1 max-w-[130px] overflow-ellipsis"
+                    >
+                      Adicionar
+                    </Link>
+                  )}
+                </>
               )}
             </div>
           )}

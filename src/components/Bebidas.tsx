@@ -30,14 +30,7 @@ export default function Bebidas() {
       {drinkInfo && drinkInfo?.length > 0 ? (
         <div className="flex flex-col w-full mt-6">
           {drinkInfo.map((drink) => (
-            <Drink
-              key={crypto.randomUUID()}
-              description={drink.description}
-              name={drink.name}
-              id={drink.id}
-              image={drink.image}
-              value={drink.value}
-            />
+            <Drink key={crypto.randomUUID()} drink={drink} />
           ))}
         </div>
       ) : (

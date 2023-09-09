@@ -2,7 +2,6 @@
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import logo from '@/image/logo.svg'
-import CartFood from '@/components/cart/cartFood/page'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { OrderType } from '@/schemas/global'
@@ -49,16 +48,13 @@ export default function CartMain({ email }: { email: string }) {
           <h2 className="flex w-full justify-center font-bold opacity-80 text-lg">
             Carrinho
           </h2>
-          <div className="w-full flex flex-col items-center mt-8">
+          <div className="w-full flex flex-col items-center mt-8 max-h-56  h-fit overflow-y-auto">
             {order.foods &&
-              order.foods.map((food) => (
+              order.foods.map((item) => (
                 <Lanche
                   key={crypto.randomUUID()}
-                  description={food.food.description}
-                  image={food.food.image}
-                  name={food.food.name}
-                  id={food.food.id}
-                  valueG={food.value.toFixed(2).replace('.', ',')}
+                  food={{ ...item.food, valueP: item.value.toFixed(2) }}
+                  orderID={item.orderID}
                 />
               ))}
 
@@ -66,11 +62,8 @@ export default function CartMain({ email }: { email: string }) {
               order.drinks.map((drink) => (
                 <Drink
                   key={crypto.randomUUID()}
-                  description={drink.drink.description}
-                  id={drink.drink.id}
-                  image={drink.drink.image}
-                  name={drink.drink.name}
-                  value={drink.value.toFixed(2)}
+                  drink={{ ...drink.drink, value: drink.value.toFixed(2) }}
+                  orderID={drink.orderID}
                 />
               ))}
           </div>

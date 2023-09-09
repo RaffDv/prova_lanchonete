@@ -14,6 +14,7 @@ import { newFoodType } from '@/components/NewFoodForm'
 import {
   AuthUserType,
   IngredientType,
+  NewOrderType,
   OrderType,
   addressType,
   drinkType,
@@ -88,6 +89,8 @@ const basicFetch = async (
             })
           : method === 'GET'
           ? await simpleBasicFetch(endpoint, buildParamString(params), headers)
+          : method === 'DELETE'
+          ? await api.delete(`/${endpoint}`)
           : false
     } catch (e: any) {
       r = e.response
@@ -239,6 +242,33 @@ export default {
       email: string
     }): Promise<resultType<{ data: OrderType }>> => {
       return await basicFetch('GET', 'order/', { email }, {})
+    },
+    new: async (
+      order: NewOrderType,
+    ): Promise<resultType<{ success: boolean; ERROR?: string }>> => {
+      return await basicFetch(
+        'POST',
+        'order/new',
+        { data: JSON.stringify(order) },
+        {},
+      )
+    },
+    remove: async (
+      id: number,
+    ): Promise<resultType<{ success: boolean; ERROR?: string }>> => {
+      return await basicFetch('DELETE', `order/${id}/delete`, {}, {})
+    },
+    clear: async ({
+      userEmail,
+    }: {
+      userEmail: string
+    }): Promise<resultType<{ success: boolean; ERROR?: string }>> => {
+      return await basicFetch(
+        'POST',
+        `order/clear`,
+        { data: JSON.stringify(userEmail) },
+        {},
+      )
     },
   },
 }

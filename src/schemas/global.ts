@@ -191,6 +191,14 @@ export const OrderSchema = z.object({
 
 export type OrderType = z.infer<typeof OrderSchema>
 
+export const NewOrderSchema = z.object({
+  user_email: z.string().email(),
+  id_food: z.number().optional(),
+  id_drink: z.number().optional(),
+  value: z.number(),
+})
+
+export type NewOrderType = z.infer<typeof NewOrderSchema>
 //  ZUSTEND USER STORE TYPES
 export type AuthUserType = {
   email: string

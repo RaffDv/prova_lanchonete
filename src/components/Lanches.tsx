@@ -34,17 +34,7 @@ export default function Lanches() {
       {lanches && lanches.length > 0 ? (
         <>
           {lanches.map((lanche) => (
-            <Lanche
-              key={crypto.randomUUID()}
-              id={lanche.id}
-              image={lanche.image}
-              description={lanche.description}
-              ingredients={lanche.ingredients}
-              name={lanche.name}
-              valueG={lanche.valueG}
-              valueM={lanche.valueM}
-              valueP={lanche.valueP}
-            />
+            <Lanche key={crypto.randomUUID()} food={lanche} />
           ))}
         </>
       ) : (

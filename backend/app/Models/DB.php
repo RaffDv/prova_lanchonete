@@ -124,7 +124,7 @@ class BD
         }
     }
 
-    public function update_sql(string $table,$data=[],$itemID)
+    public function update_sql(string $table,$data=[],$itemID = 0,bool $bulk = false,array $dataBulk = [])
     {
        
             try {
@@ -137,9 +137,22 @@ class BD
                     }
                     $sql .=" SET".implode(",", $whereConditions);
                 }
-    
-                $sql .= " WHERE id = {$itemID}";
-                
+
+                if($bulk){
+                    if (!empty($dataBulk)) {
+                        $whereConditions = [];
+                        foreach ($dataBulk as $field => $value) {
+                            $whereConditions[] = " $field = :$field";
+                        }
+                        $sql .=" WHERE".implode(",", $whereConditions);
+                    }
+                    $data = array_merge($data,$dataBulk);
+                }
+                else
+                {
+                    $sql .= " WHERE id = {$itemID}";
+
+                }
                 $r = $this->safeQuery($sql,$data);
                 if($r) return true;
                 return false;

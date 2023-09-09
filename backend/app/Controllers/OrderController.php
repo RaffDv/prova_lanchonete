@@ -22,12 +22,13 @@ class OrderController{
                 $foods =[];
                 $drinks =[];
                 foreach ($r as $value) {
-                  if($value['id_food']){
-                    $foods[] = ['orderID' => $value['id'],'value'=>$value['value'],'food'=>$this->db->select_sql('foods',['fields'=>'*'],['id'=>$value['id_food']])[0]];
-    
+                  if($value['id_food'] && !$value['isPaid']){
+                    $food =$this->db->select_sql('foods',['fields'=>'*'],['id'=>$value['id_food']])[0];
+                    $foods[] = ['orderID' => $value['id'],'value'=>$value['value'],'food'=>$food];
                   }
-                  if($value['id_drink']){
-                    $drinks[] =['orderID'=>$value['id'],'value'=>$value['value'],'drink'=> $this->db->select_sql('drinks',['fields'=>'*'],['id'=>$value['id_drink']])[0]];
+                  if($value['id_drink'] && !$value['isPaid']){
+                    $drink = $this->db->select_sql('drinks',['fields'=>'*'],['id'=>$value['id_drink']])[0];
+                    $drinks[] =['orderID'=>$value['id'],'value'=>$value['value'],'drink'=>$drink];
                   }
                 }
                 $this->msg['data']['foods'] = $foods;
@@ -49,7 +50,9 @@ class OrderController{
         $this->status = 500;
 
         $data =json_decode($request->getParsedBody()['data'],true);
-        
+        $id_user = $this->db->select_sql('users',['fields'=>'id'],['email' => $data['user_email']])[0]['id'];
+        unset($data['user_email']);
+        $data['id_user'] = $id_user;
         try {
           $data = $this->db->insert_sql('orders',$data);
           if($data)
@@ -100,6 +103,54 @@ class OrderController{
        }
         $response->getBody()->write(json_encode($this->msg));
         return $response->withStatus($this->status);
+    }
+
+    public function delete(Request $req, Response $res, array $args) {
+        $this->loadDB();
+        $this->status=500;
+        try {
+            if($this->db->delete('orders',$args)){
+                $this->status=200;
+                $this->msg['success'] = true;
+            }
+            else{
+                $this->status=400;
+                $this->msg['success'] = false;
+            }
+
+
+        } catch (Exception $e) {
+            $this->status=422;
+            $this->msg['ERROR'] = 'M.OR202309091136 - '.$e->getMessage();
+        }
+        $res->getBody()->write(json_encode($this->msg));
+        return $res->withStatus($this->status);
+    }
+
+    public function clear(Request $req, Response $res, array $args) {
+        $this->loadDB();
+        $this->status = 500;
+        $data =json_decode($req->getParsedBody()['data'],true);
+        $id_user = $this->db->select_sql('users',['fields'=>'id'],['email' => $data])[0]['id'];
+        $data = ['isPaid' => '1'];
+        try {
+            if($this->db->update_sql('orders',$data,0,true,['id_user' => $id_user])){
+                $this->status=200;
+                $this->msg['success'] = true;
+            }
+            else {
+                $this->status=400;
+                $this->msg['success'] = false;
+            }
+        }catch (Exception $e) {
+            $this->status=422;
+            $this->msg['ERROR'] = 'M.OR202309091437 - '.$e->getMessage();
+        }
+
+        
+
+        $res->getBody()->write(json_encode($this->msg));
+        return $res->withStatus($this->status);
     }
 
    
