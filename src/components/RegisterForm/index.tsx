@@ -10,7 +10,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import Error from '../defaultComponents/Error'
 import api from '@/api'
-import { AuthContext } from '@/contexts/user/auth'
 import Link from 'next/link'
 export type formProps = z.infer<typeof AccountSchema>
 export default function RegisterForm() {
@@ -33,8 +32,6 @@ export default function RegisterForm() {
     },
   })
 
-  const { login } = useContext(AuthContext)
-
   const [page, setPage] = useState<number>(1)
 
   const handleFormSubmit = async (data: formProps) => {
@@ -48,8 +45,6 @@ export default function RegisterForm() {
     if (r.data.success) {
       const email = watch('account.email')
       const pass = watch('account.pass')
-
-      login({ email, pass })
     }
   }
   console.log(errors)

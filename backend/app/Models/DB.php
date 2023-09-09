@@ -63,7 +63,7 @@ class BD
                 }
                 $sql .= '(' . implode(",", $whereConditions) . ')';
             }
-    
+
             $r = $this->safeQuery($sql, $values);
             if($r){
                 return true;
@@ -76,8 +76,30 @@ class BD
 
 
     }
+    
+    public function insert_bulk(string $table, string $fields, int $itemID, array $ingredientsIDs)
+    {
+        try {
+            $sql = "INSERT INTO {$table} ({$fields}) VALUES ";
+            if (!empty($ingredientsIDs)) {
+                foreach ($ingredientsIDs as $key => $value) {
+                    $values[] = "({$itemID}, :{$key})";
+                }
+                $sql .= implode(", ", $values);
+                $r = $this->safeQuery($sql, $ingredientsIDs);
+                if ($r) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (Exception $e) {
+            echo "ERROR: " . $e->getMessage();
+            echo PHP_EOL;
+        }
+    }
 
-    public function select_sql(string $table, $fields = ["fields" => "*"], $filter = [])
+
+    public function select_sql(string $table, $fields = ["fields" => "*"], $filter = [],bool $fetchRows = false)
     {
         try {
             $sql = "SELECT {$fields['fields']} from {$table}";
@@ -88,10 +110,12 @@ class BD
                 }
                 $sql .= " WHERE " . implode(" AND ", $whereConditions);
             }
-
-            $r = $this->safeQuery($sql, $filter,2);
-            
-            if($r){
+            $type =2;
+            if($fetchRows){
+                $type = 3;
+            }
+            $r = $this->safeQuery($sql, $filter,$type);
+            if(is_array($r)){
                 return $r;
             }
             return false;
@@ -100,36 +124,61 @@ class BD
         }
     }
 
-    public function update_sql(string $table,$token,$data=[])
+    public function update_sql(string $table,$data=[],$itemID = 0,bool $bulk = false,array $dataBulk = [])
     {
-        $decoded =  \Models\JWTProvider::decode_token($token);
-        $filter = ["email" =>$decoded->email];
-        $userID = $this->select_sql($table,['fields' => 'id'],$filter);
-        try {
-            $sql = "UPDATE {$table}";
-
-            if (!empty($data)) {
-                $whereConditions = [];
-                foreach ($data as $field => $value) {
-                    $whereConditions[] = " $field = :$field";
-                }
-                $sql .=" SET".implode(",", $whereConditions);
-            }
-
-            if (isset($userID[0])) {
-                
-                $sql .= " WHERE id = :id"; 
-                $data['id'] = $userID[0]['id'];
-            }
-            $r = $this->safeQuery($sql,$data);
-            if($r) return true;
-            return false;
-        } catch (PDOException $e) {
-            echo "ERROR   " . $e->getMessage();
-
-        }
-    }
+       
+            try {
+                $sql = "UPDATE {$table}";
     
+                if (!empty($data)) {
+                    $whereConditions = [];
+                    foreach ($data as $field => $value) {
+                        $whereConditions[] = " $field = :$field";
+                    }
+                    $sql .=" SET".implode(",", $whereConditions);
+                }
+
+                if($bulk){
+                    if (!empty($dataBulk)) {
+                        $whereConditions = [];
+                        foreach ($dataBulk as $field => $value) {
+                            $whereConditions[] = " $field = :$field";
+                        }
+                        $sql .=" WHERE".implode(",", $whereConditions);
+                    }
+                    $data = array_merge($data,$dataBulk);
+                }
+                else
+                {
+                    $sql .= " WHERE id = {$itemID}";
+
+                }
+                $r = $this->safeQuery($sql,$data);
+                if($r) return true;
+                return false;
+            } catch (PDOException $e) {
+                echo "ERROR   " . $e->getMessage();
+    
+            }
+
+        
+        return false;
+    }
+    public function delete (string $table,array $field_value=[])
+    {
+        $sql = "DELETE FROM {$table} ";
+        if (!empty($field_value)) {
+            $whereConditions = [];
+            foreach ($field_value as $field => $value) {
+                $whereConditions[] = " $field = :$field";
+            }
+            $sql .=" WHERE".implode(",", $whereConditions);
+        }
+        $r = $this->safeQuery($sql,$field_value);
+        if($r) return true;
+        return false;
+
+    }
 
 
     // ########################################################################################
@@ -150,7 +199,15 @@ class BD
                         
                         case 2:
                             return $s->fetchAll();
+                        
+                        case 3: 
                             
+                            $result = [];
+                            while ($row = $s->fetch()) {
+                                $result[] = array_shift($row);
+                                
+                            }
+                            return $result;
                         default:
                             return $s->fetchAll();
                             break;
@@ -163,8 +220,15 @@ class BD
         } 
         catch (PDOException $e) 
         {
+            echo $e->getMessage() . PHP_EOL;
+
            return null;
         }
+    }
+
+    public function lastInsert() {
+        return $this->conx->lastInsertId();
+
     }
 
 

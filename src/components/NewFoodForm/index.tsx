@@ -1,14 +1,17 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import { newFoodSchema } from '@/schemas/global'
+import { IngredientType, newFoodSchema } from '@/schemas/global'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { useCallback, useState } from 'react'
+import { SelectIng } from '../SelectIng'
+import { useEffect, useState } from 'react'
+import api from '@/api'
 export type newFoodType = z.infer<typeof newFoodSchema>
 
 export default function FoodForm() {
+  const [ingredients, setIngredients] = useState<IngredientType[]>([])
   const {
     handleSubmit,
     register,
@@ -21,11 +24,17 @@ export default function FoodForm() {
     defaultValues: {
       description: '',
       image: undefined,
-      ingredients: '',
+      ingredientsIDs: [],
       name: '',
     },
   })
   const { back } = useRouter()
+  const getData = async () => {
+    const r = await api.ingredient.get()
+    if (r.success) {
+      setIngredients(r.data.data)
+    }
+  }
 
   const handleFormSubmit = async (data: any) => {
     delete data.size
@@ -48,6 +57,10 @@ export default function FoodForm() {
       })
   }
   const sizes = watch('size')
+
+  useEffect(() => {
+    getData()
+  }, [])
 
   return (
     <form
@@ -105,7 +118,7 @@ export default function FoodForm() {
           <label htmlFor="sizeG">G</label>
         </div>
       </div>
-      {sizes?.includes('P') && (
+      {sizes && sizes.includes('P') && (
         <input
           placeholder={`Preço para P`}
           className="border rounded-full bg-inputBg p-2"
@@ -113,7 +126,7 @@ export default function FoodForm() {
           {...register('valueP')}
         />
       )}
-      {sizes?.includes('M') && (
+      {sizes && sizes?.includes('M') && (
         <input
           placeholder={`Preço para M`}
           className="border rounded-full bg-inputBg p-2"
@@ -121,7 +134,7 @@ export default function FoodForm() {
           type="number"
         />
       )}
-      {sizes?.includes('G') && (
+      {sizes && sizes?.includes('G') && (
         <input
           placeholder={`Preço para G`}
           className="border rounded-full bg-inputBg p-2"
@@ -134,11 +147,25 @@ export default function FoodForm() {
         className="border rounded-md w-full bg-inputBg p-2"
         {...register('description')}
       />
-      <textarea
-        placeholder="ingredientes"
-        className="border rounded-md h-32 w-full displa bg-inputBg p-2"
-        {...register('ingredients')}
-      />
+      <div>
+        <span className="text-xs text-font font-light leading-relaxed">
+          Clique nos ingredientes que você deseja adicionar/retirar deste prato
+        </span>
+        <div className="flex justify-around flex-wrap gap-y-1.5 gap-x-1 border border-gray-300 p-1.5 rounded-md max-h-32 overflow-y-auto">
+          {/* ingredients */}
+          {ingredients.map((ing) => {
+            return (
+              <SelectIng
+                {...register('ingredientsIDs')}
+                key={crypto.randomUUID()}
+                inpValue={ing.id}
+              >
+                {ing.name}
+              </SelectIng>
+            )
+          })}
+        </div>
+      </div>
 
       <button
         type="submit"

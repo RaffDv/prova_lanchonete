@@ -2,24 +2,38 @@
 import Base from '@/components/Base'
 import Lanches from '@/components/Lanches'
 import Bebidas from '@/components/Bebidas'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import BarraPesquisa from '../BarraPesquisa'
 import DropdownMenu from '../Dropdown'
-import { AuthContext } from '@/contexts/user/auth'
+import { useAuthStore } from '@/store/auth'
 
-export default function ListMain({
-  UserEmail,
-  userPriv,
-}: {
-  UserEmail: string
-  userPriv: number
-}) {
+export default function ListMain() {
   const [page, setPage] = useState<number>(1)
-  const { setPrivilegesLevel } = useContext(AuthContext)
+  const authStore = useAuthStore()
+  useEffect(() => {
+    const intervalId = setInterval(
+      () => {
+        authStore.actions.reset()
+      },
+      1000 * 60 * 30,
+    )
+
+    return () => {
+      clearInterval(intervalId)
+    }
+  }, [])
 
   useEffect(() => {
-    setPrivilegesLevel(userPriv)
-    console.log('update user privileges')
+    const intervalId = setInterval(
+      () => {
+        authStore.actions.reset()
+      },
+      1000 * 60 * 30,
+    )
+
+    return () => {
+      clearInterval(intervalId)
+    }
   }, [])
   return (
     <main className="flex w-screen h-screen flex-col justify-center items-center">
@@ -28,7 +42,9 @@ export default function ListMain({
         <div className="flex items-center justify-between w-full">
           <Base />
           <div className="flex m-4 gap-4">
-            <DropdownMenu UserEmail={UserEmail} />
+            <>
+              <DropdownMenu />
+            </>
           </div>
         </div>
       </nav>

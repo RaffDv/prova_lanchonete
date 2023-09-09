@@ -1,6 +1,4 @@
 <?php
-
-
 require __DIR__ . '/../vendor/autoload.php';
 
 require_once __DIR__.'/../app/Models/cred.php';
@@ -9,6 +7,8 @@ require_once __DIR__.'/../app/Models/DB.php';
 use App\Controllers\FoodController;
 use App\Controllers\UserController;
 use App\Controllers\DrinkController;
+use App\Controllers\IngredientsController;
+use App\Controllers\OrderController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
@@ -16,7 +16,7 @@ use Slim\Routing\RouteCollectorProxy;
 
 $app = AppFactory::create();
 
-
+$app->addBodyParsingMiddleware();
 $app->options('/{routes:.+}', function ($request, $response, $args) {
     return $response;
 });
@@ -44,10 +44,10 @@ $app->group('/api', function (RouteCollectorProxy $api)
     {
         $user->get('/',[UserController::class, 'get']);
         $user->get('/address',[UserController::class,'address']);
-        $user->get('/{id}',[UserController::class, 'unique']);
+        $user->get('/{email}',[UserController::class, 'unique']);
         $user->post('/new',[UserController::class,'new']);
-        $user->post('/update',[UserController::class,'update']);
         $user->post('/login',[UserController::class,'login']);
+        $user->post('/update',[UserController::class,'update']);
     });
 
     $api->group('/food',function (RouteCollectorProxy $food)
@@ -55,12 +55,29 @@ $app->group('/api', function (RouteCollectorProxy $api)
         $food->get('/',[FoodController::class,'get']);
         $food->get('/{id}',[FoodController::class,'unique']);
         $food->post('/new',[FoodController::class,'new'] );
+        $food->post('/{id}',[FoodController::class,'update']);
     });
     $api->group('/drink',function (RouteCollectorProxy $drink)
     {   
         $drink->get('/',[DrinkController::class,'get']);
         $drink->get('/{id}',[DrinkController::class,'unique']);
         $drink->post('/new',[DrinkController::class,'new'] );
+        $drink->post('/{id}',[DrinkController::class,'update'] );
+    });
+    $api->group('/ingredient',function (RouteCollectorProxy $ing)
+    {   
+        $ing->get('/',[IngredientsController::class,'get']);
+        $ing->get('/{id}',[IngredientsController::class,'unique']);
+        $ing->post('/new',[IngredientsController::class,'new'] );
+        $ing->post('/{id}',[IngredientsController::class,'update'] );
+    });
+    $api->group('/order',function (RouteCollectorProxy $order)
+    {   
+        $order->get('/',[OrderController::class,'unique']);
+        $order->post('/clear',[OrderController::class,'clear']);
+        $order->post('/new',[OrderController::class,'new'] );
+        $order->post('/{id}',[OrderController::class,'update']);
+        $order->delete('/{id}/delete',[OrderController::class,'delete']);
     });
 
 });

@@ -33,6 +33,6 @@ export default function Pedido({ params }: { params: { id: number } }) {
       />
     </div>
   ) : (
-    <PageAdd data={foodInfo} />
+    <PageAdd data={foodInfo} id={params.id} />
   )
 }
