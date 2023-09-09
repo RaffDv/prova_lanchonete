@@ -188,6 +188,16 @@ export const OrderSchema = z.object({
     }),
   ),
 })
+export const newFoodSchema = z.object({
+  name: z.string().min(1, 'Este campo é obrigatório'),
+  description: z.string().min(1, 'Este campo é obrigatório'),
+  ingredientsIDs: z.string().array(),
+  image: z.any(),
+  size: z.string().array().optional(),
+  valueP: z.string().optional(),
+  valueM: z.string().optional(),
+  valueG: z.string().optional(),
+})
 
 export type OrderType = z.infer<typeof OrderSchema>
 
