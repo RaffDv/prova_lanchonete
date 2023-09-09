@@ -18,7 +18,7 @@ class UserController{
         
         $filter = $request->getQueryParams();
         try {
-            $data = $this->db->select_sql('users', ['fields' => '*'], $filter);
+            $data = $this->db->select_sql('users', ['fields' => '*'], $filter)[0];
             $this->msg['data'] = $data;
             $this->status=200;
         } catch (Exception $e) {

@@ -28,10 +28,10 @@ class IngredientsController
                 $r = $this->db->insert_sql('ingredients', $body);
                 if ($r) {
                     $this->status = 200;
-                    $this->msg = ['msg' => 'success to insert data'];
+                    $this->msg = ['success' => true];
                 } else {
                     $this->status = 409;
-                    $this->msg = ['msg' => 'fail to insert data'];
+                    $this->msg = ['success' => false];
                 }
             } catch (Exception $e) {
                 $this->msg = ['msg' => $e->getMessage()];

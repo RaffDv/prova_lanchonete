@@ -159,6 +159,13 @@ export const IngredientSchema = z.object({
 })
 export type IngredientType = z.infer<typeof IngredientSchema>
 
+const newIngredientSchema = z.object({
+  name: z.string(),
+  amount: z.number(),
+})
+
+export type newIngredientType = z.infer<typeof newIngredientSchema>
+
 //  ZUSTEND USER STORE TYPES
 export type AuthUserType = {
   email: string

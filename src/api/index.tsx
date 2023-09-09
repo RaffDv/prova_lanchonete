@@ -17,6 +17,7 @@ import {
   addressType,
   drinkType,
   foodType,
+  newIngredientType,
   newUserType,
   userType,
 } from '@/schemas/global'
@@ -172,6 +173,16 @@ export default {
       resultType<{ data: IngredientType[]; msg?: string }>
     > => {
       return await basicFetch('GET', 'ingredient/', {}, {})
+    },
+    new: async (
+      ingredient: newIngredientType,
+    ): Promise<resultType<{ succes: boolean }>> => {
+      return await basicFetch(
+        'POST',
+        'ingredient/new',
+        { data: JSON.stringify(ingredient) },
+        {},
+      )
     },
   },
   user: {
