@@ -227,7 +227,7 @@ export type ActionsProps = {
 
 export type StoreProps = {
   state: {
-    user: AuthUserType | null
+    user: AuthUserType
   }
   actions: ActionsProps
 }

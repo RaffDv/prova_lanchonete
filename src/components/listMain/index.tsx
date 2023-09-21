@@ -6,10 +6,12 @@ import { useEffect, useState } from 'react'
 import BarraPesquisa from '../BarraPesquisa'
 import DropdownMenu from '../Dropdown'
 import { useAuthStore } from '@/store/auth'
+import { useAuth } from '@/hooks/useGetFromAuth'
 
 export default function ListMain() {
   const [page, setPage] = useState<number>(1)
   const authStore = useAuthStore()
+  const user = useAuth(useAuthStore, (state) => state.state.user)
   useEffect(() => {
     const intervalId = setInterval(
       () => {
@@ -43,7 +45,7 @@ export default function ListMain() {
           <Base />
           <div className="flex m-4 gap-4">
             <>
-              <DropdownMenu />
+              <DropdownMenu params={{ email: user?.email as string }} />
             </>
           </div>
         </div>

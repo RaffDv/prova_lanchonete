@@ -55,7 +55,6 @@ export default function Payment() {
       </div>
       {payment === 1 && (
         <div className="w-full flex flex-col items-center justify-center">
-          <p>Não sei oq colocar</p>
           <button className="flex mt-12 w-32 h-7 bg-buttonBg border rounded-full text-font font-bold item-center justify-center">
             Finalizar
           </button>

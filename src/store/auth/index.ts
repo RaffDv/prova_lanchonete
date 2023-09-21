@@ -9,7 +9,12 @@ export const useAuthStore = create<StoreProps>()(
   persist(
     (set, get) => ({
       state: {
-        user: null,
+        user: {
+          email: '',
+          pass: '',
+          privileges: 0,
+          token: '',
+        },
       },
       actions: {
         login: async (user) => {
@@ -34,14 +39,32 @@ export const useAuthStore = create<StoreProps>()(
         logout: () => {
           console.log('execute logout function')
 
-          set({ state: { user: null } })
+          set({
+            state: {
+              user: {
+                email: '',
+                pass: '',
+                privileges: 0,
+                token: '',
+              },
+            },
+          })
         },
         reset: () => {
           const token = get().state.user?.token
           if (token) {
             const decoded = jwtDecode<jwtType>(atob(token))
             if (Date.now() > 1000 * decoded.exp) {
-              set({ state: { user: null } })
+              set({
+                state: {
+                  user: {
+                    email: '',
+                    pass: '',
+                    privileges: 0,
+                    token: '',
+                  },
+                },
+              })
             }
           }
         },
