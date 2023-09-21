@@ -12,9 +12,7 @@ class UserController{
 
     public function get(Request $request, Response $response){
         
-        $this->loadDB();
-        $header = $request->getHeaders();
-    
+        $this->loadDB();    
         
         $filter = $request->getQueryParams();
         try {
