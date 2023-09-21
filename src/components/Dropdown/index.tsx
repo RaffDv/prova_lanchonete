@@ -70,7 +70,7 @@ export default function DropdownMenu({
                         <Link href={`user/${user.email}/edit`}>Perfil</Link>
                       </Item>
                       <Item>
-                        <Link href={'#'}>Carrinho</Link>
+                        <Link href={`/user/${user.email}/cart`}>Carrinho</Link>
                       </Item>
                       <Item>
                         <button

@@ -1,22 +1,33 @@
 'use client'
-import { useContext, useState } from 'react'
-import { foodType } from '@/schemas/global'
+import { useState } from 'react'
+import { NewOrderType, foodType } from '@/schemas/global'
 import { ArrowLeft } from '@phosphor-icons/react'
 
 import { useRouter } from 'next/navigation'
+import { SelectIng } from './SelectIng'
+import { useAuthStore } from '@/store/auth'
+import { useAuth } from '@/hooks/useGetFromAuth'
+import api from '@/api'
 
 export default function PageAdd({
   data,
   valueB,
+  id,
 }: {
   data: foodType
   valueB?: string
+  id: number
 }) {
   const [value, setValue] = useState<number>(0)
   const [qnt, setQnt] = useState<number>(0)
+  const [ingredients, setIngredients] = useState<number[]>(() =>
+    data.ingredients ? data.ingredients?.map((item) => Number(item.id)) : [],
+  )
+  const [order, setOrder] = useState<NewOrderType>({} as NewOrderType)
+
+  const user = useAuth(useAuthStore, (state) => state.state.user)
 
   const { push, back } = useRouter()
-  // Valor Null, Valor médio, Valor grande
 
   return (
     <main className="flex flex-col h-full w-full">
@@ -31,7 +42,6 @@ export default function PageAdd({
       </div>
       <div className="flex flex-col m-3 mt-6">
         <p className="text-font font-bold">{data.name}</p>
-        <p className="text-font text-xs">{data.ingredients}</p>
       </div>
       <div className="flex m-3 flex-col justify-center mt-6">
         <div className="flex items-center">
@@ -46,6 +56,38 @@ export default function PageAdd({
         ></textarea>
         {/* Fim Observações */}
         {/* Inicio tamanho */}
+        <div>
+          <span className="text-xs text-font font-light leading-relaxed">
+            Clique nos ingredientes que você deseja retirar deste prato
+          </span>
+          <div className="flex justify-around flex-wrap gap-y-1.5 gap-x-1 border border-gray-300 p-1.5 rounded-md max-h-32 overflow-y-auto">
+            {/* ingredients */}
+            {data.ingredients?.map((ing) => {
+              return (
+                <SelectIng
+                  key={crypto.randomUUID()}
+                  inpValue={ing.id}
+                  req={ingredients?.includes(Number(ing.id))}
+                  onChange={() => {
+                    setIngredients((prev) => {
+                      if (prev?.includes(Number(ing.id))) {
+                        const ns = prev?.filter(
+                          (item) => item !== Number(ing.id),
+                        )
+                        return ns
+                      } else {
+                        const ns = [...prev, Number(ing.id)]
+                        return ns
+                      }
+                    })
+                  }}
+                >
+                  {ing.name}
+                </SelectIng>
+              )
+            })}
+          </div>
+        </div>
         <div className="flex flex-col w-full text-xs font-bold text-font m-3 gap-2 mt-10 mb-12">
           <p>Tamanho:</p>
           {data.valueP && (
@@ -54,6 +96,7 @@ export default function PageAdd({
                 onClick={() => {
                   setValue(Number(data.valueP))
                   setQnt(1)
+                  setOrder({ ...order, value: Number(data.valueP) })
                 }}
                 type="radio"
                 name="tamanho"
@@ -70,6 +113,7 @@ export default function PageAdd({
                 onClick={() => {
                   setQnt(1)
                   setValue(Number(data.valueM))
+                  setOrder({ ...order, value: Number(data.valueM) })
                 }}
                 type="radio"
                 name="tamanho"
@@ -85,6 +129,7 @@ export default function PageAdd({
               <input
                 onClick={() => {
                   setQnt(1)
+                  setOrder({ ...order, value: Number(data.valueG) })
                   setValue(Number(data.valueG))
                 }}
                 type="radio"
@@ -102,7 +147,7 @@ export default function PageAdd({
               <input
                 onClick={() => {
                   setQnt(1)
-
+                  setOrder({ ...order, value: Number(valueB) })
                   setValue(Number(valueB))
                 }}
                 type="radio"
@@ -126,7 +171,7 @@ export default function PageAdd({
                   if (prev === 0) {
                     return prev
                   }
-
+                  setOrder({ ...order, value: value * (prev - 1) })
                   return prev - 1
                 })
               }
@@ -136,7 +181,13 @@ export default function PageAdd({
             />
             <p className="text-main">{qnt}</p>
             <input
-              onClick={() => setQnt((prev) => prev + 1)}
+              onClick={() =>
+                setQnt((prev) => {
+                  setOrder({ ...order, value: value * (prev + 1) })
+
+                  return prev + 1
+                })
+              }
               className="text-main"
               type="button"
               value="+"
@@ -144,24 +195,16 @@ export default function PageAdd({
           </div>
           <div>
             <input
-              onClick={() => {
-                // if (valueB) {
-                //   drinkUpdate({
-                //     name: data.name,
-                //     value,
-                //     amount: qnt,
-                //     image: data.image,
-                //   })
-                // } else {
-                //   foodUpdate({
-                //     name: data.name,
-                //     value,
-                //     amount: qnt,
-                //     image: data.image,
-                //   })
-                // }
-
-                push('/')
+              onClick={async () => {
+                const r = await api.order.new({
+                  ...order,
+                  user_email: user?.email as string,
+                  id_drink: valueB ? Number(id) : undefined,
+                  id_food: valueB ? undefined : Number(id),
+                })
+                if (r.data.success) {
+                  push('/')
+                }
               }}
               className="bg-cyan-figma w-32 h-6 flex justify-center items-center text-xs font-bold"
               style={{ borderRadius: '20px' }}

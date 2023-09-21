@@ -13,9 +13,13 @@
 import { newFoodType } from '@/components/NewFoodForm'
 import {
   AuthUserType,
+  IngredientType,
+  NewOrderType,
+  OrderType,
   addressType,
   drinkType,
   foodType,
+  newIngredientType,
   newUserType,
   userType,
 } from '@/schemas/global'
@@ -85,6 +89,8 @@ const basicFetch = async (
             })
           : method === 'GET'
           ? await simpleBasicFetch(endpoint, buildParamString(params), headers)
+          : method === 'DELETE'
+          ? await api.delete(`/${endpoint}`)
           : false
     } catch (e: any) {
       r = e.response
@@ -166,6 +172,23 @@ export default {
       return await basicFetch('GET', `drink/${id}`, {}, {})
     },
   },
+  ingredient: {
+    get: async (): Promise<
+      resultType<{ data: IngredientType[]; msg?: string }>
+    > => {
+      return await basicFetch('GET', 'ingredient/', {}, {})
+    },
+    new: async (
+      ingredient: newIngredientType,
+    ): Promise<resultType<{ succes: boolean }>> => {
+      return await basicFetch(
+        'POST',
+        'ingredient/new',
+        { data: JSON.stringify(ingredient) },
+        {},
+      )
+    },
+  },
   user: {
     login: async ({
       email,
@@ -210,6 +233,42 @@ export default {
       email: string
     }): Promise<resultType<{ data: userType; msg?: string }>> => {
       return await basicFetch('GET', `user/`, { email }, {})
+    },
+  },
+  order: {
+    get: async ({
+      email,
+    }: {
+      email: string
+    }): Promise<resultType<{ data: OrderType }>> => {
+      return await basicFetch('GET', 'order/', { email }, {})
+    },
+    new: async (
+      order: NewOrderType,
+    ): Promise<resultType<{ success: boolean; ERROR?: string }>> => {
+      return await basicFetch(
+        'POST',
+        'order/new',
+        { data: JSON.stringify(order) },
+        {},
+      )
+    },
+    remove: async (
+      id: number,
+    ): Promise<resultType<{ success: boolean; ERROR?: string }>> => {
+      return await basicFetch('DELETE', `order/${id}/delete`, {}, {})
+    },
+    clear: async ({
+      userEmail,
+    }: {
+      userEmail: string
+    }): Promise<resultType<{ success: boolean; ERROR?: string }>> => {
+      return await basicFetch(
+        'POST',
+        `order/clear`,
+        { data: JSON.stringify(userEmail) },
+        {},
+      )
     },
   },
 }

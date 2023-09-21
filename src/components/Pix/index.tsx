@@ -6,7 +6,7 @@ export default function Pix() {
         <span className="font-medium ml-4">avell@gmail.com</span>
       </div>
 
-      <input type="file" className="hidden" id="comprovante" />
+      <input type="file" required className="hidden" id="comprovante" />
       <label htmlFor="comprovante" className="font-medium m-4 underline">
         Enviar comprovante
       </label>

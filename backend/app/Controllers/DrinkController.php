@@ -23,17 +23,23 @@ class DrinkController
             try 
             {
                 $data['image'] = $this->saveFile($this->directory,$files['image']);
-                $data = array_merge($data,$body);
-                $r = $this->db->insert_sql('drinks',$data);
-                if($r)
-                {
-                    $this->status=200;
-                    $this->msg= ['msg' => 'success to insert data'];
+                $ingValues =$body['ingredientsIDs'];
+                foreach ($ingValues as $value) {
+                    $ingredients[uniqid()]=  $value;
                 }
-                else 
+                unset($body['ingredientsIDs']);
+
+                $data = array_merge($data,$body);
+                if($this->db->insert_sql('drinks',$data))
                 {
-                    $this->status=409;
-                    $this->msg= ['msg' => 'fail to insert data'];
+                    $drinkId = $this->db->lastInsert();
+                    if($this->db->insert_bulk('drink_ingredient','id_drink,id_ingredient',$drinkId,$ingredients)){
+                        $this->status = 200;
+                        $this->msg = ['msg' => 'success to insert data'];
+                    }else {
+                        $this->status = 409;
+                        $this->msg = ['msg' => 'fail to insert data'];
+                    }
                 }
             } 
             catch (Exception $e) 
@@ -53,14 +59,20 @@ class DrinkController
         $this->loadDB();
         $this->status=500;
 
-        $r  = $this->db->select_sql('drinks');
-        if(is_array($r)){
-            $this->status=200;
-            $this->msg = ['data' => $r];
+        $drinks  = $this->db->select_sql('drinks');
+        foreach ($drinks as $key => $value) {
+            $ingredients = $this->db->select_sql('drink_ingredient',['fields'=>'id_ingredient'],['id_drink' => $value['id']],true);
+            foreach ($ingredients as $value) {
+                $in[] = array_shift(( $this->db->select_sql('ingredients' ,['fields' => 'id,name'],['id' => $value] )));
+                $drinks[$key]['ingredients'] = $in;
+            }
         }
-        else
-        {
-            $this->status=400;
+
+        if(is_array($drinks)){
+            $this->status = 200;
+            $this->msg = ['data' => $drinks];
+        } else {
+            $this->status = 400;
             $this->msg = ['msg' => 'error to get data'];
         }
         $res->getBody()->write(json_encode($this->msg));
@@ -73,66 +85,82 @@ class DrinkController
         
         $this->status=500;
         try {
-            $r =json_encode( ['data' => $this->db->select_sql('drinks',['fields'=>'*'],$args)[0]]);
+            $drink = $this->db->select_sql('drinks', ['fields' => '*'], $args)[0];
+            
+                $ingredients = $this->db->select_sql('drink_ingredient',['fields'=>'id_ingredient'],['id_drink' => $drink['id']],true);
+                foreach ($ingredients as $value) {
+                    $in[] = array_shift(( $this->db->select_sql('ingredients' ,['fields' => 'id,name'],['id' => $value] )));
+                }
+                $drink['ingredients'] = $in;
+            
+            $this->msg['data'] = $drink;
+
             $this->status = 200;
         } catch (Exception $e) {
-            $r = 'ERROR - CHECK THE INFORMED DATA';
+            $this->msg= 'ERROR -  '.$e->getMessage();
             $this->status = 422;
         }
-        $response->getBody()->write($r);
-        
+        $response->getBody()->write(json_encode($this->msg));
         return $response->withStatus($this->status);
     }
     public function update(Request $request, Response $response, array $args)
     {
+        
         $this->loadDB();
         $this->status = 500;
         $body =json_decode($request->getParsedBody()['data'],true);
         $files = $request->getUploadedFiles()['image'];
         $token = $request->getCookieParams('token')['token'];
         $decoded = \Models\JWTProvider::decode_token($token);
-        if($decoded->privileges === 10)
-        {
-
+        $ingredientsIDs = $body['ingredientsIDs'];
+        unset($body['ingredientsIDs']);
+        if($decoded->privileges === 10) {
             try {
-                $id = $this->db->select_sql('drinks', ['fields' => 'id'], $args)[0]['id'];
-                if(isset($files)){
+                $id = $args['id'];
+                if(isset($files))
+                {
                     $img = $this->saveFile($this->directory, $files);
-                       if( $this->deleteOldFile($id)){
-        
-                           $body["image"] =$img;
-                           print_r($body);
-                           try {
-                               if ($this->db->update_sql('drinks', $body, $id)) {
-                                   $this->status=200;
-                                   $this->msg = ['success' => true];
-                               } 
-                               else
-                               {
-                                   $this->status=400;
-                                   $this->msg = ['success' => false];
-                               }
-                           } catch (Exception $e) {
-                               $this->status=400;
-                               $this->msg = ['msg' => 'update fail | ERROR:   ' .json_encode($e->getTrace()) .'       '. $e->getMessage()];
-                           }
-                       }
+                    if( $this->deleteOldFile($id)){
     
+                        $body["image"] =$img;
+                        try {
+                            if( $this->db->delete('drink_ingredient',['id_drink'=>$id])){
+                                if($this->db->insert_bulk('drink_ingredient','id_drink,id_ingredient',$id,$ingredientsIDs)){
+                                    if ($this->db->update_sql('drinks', $body, $id)) {
+                                        $this->status=200;
+                                        $this->msg = ['success' => true];
+                                    } 
+                                    else
+                                    {
+                                        $this->status=400;
+                                        $this->msg = ['success' => false];
+                                    }
+
+                            }}
+                        } catch (Exception $e) {
+                            $this->status=400;
+                            $this->msg = ['msg' => 'update fail | ERROR:   ' .json_encode($e->getTrace()) .'       '. $e->getMessage()];
+                        }
+                    }
                 }
                 else
                 {
                     try 
                     {
-                        if ($this->db->update_sql('drinks', $body, $id)) 
-                        {
-                            $this->status=200;
-                            $this->msg = ['success' => true];
-                        } 
-                        else
-                        {
-                            $this->status=400;
-                            $this->msg = ['success' => false];
-                        }
+                       if( $this->db->delete('drink_ingredient',['id_drink'=>$id])){
+                        if($this->db->insert_bulk('drink_ingredient','id_drink,id_ingredient',$id,$ingredientsIDs))
+
+                           if ($this->db->update_sql('drinks', $body, $id)) 
+                           {
+                               $this->status=200;
+                               $this->msg = ['success' => true];
+                           } 
+                           else
+                           {
+                               $this->status=400;
+                               $this->msg = ['success' => false];
+                           }
+                       }
                     } 
                     catch (Exception $e) 
                     {
@@ -140,20 +168,18 @@ class DrinkController
                         $this->msg = ['msg' => 'update fail | ERROR:   ' .json_encode($e->getTrace()) .'       '. $e->getMessage()];
                     }
                 }
-                
-    
+
             } catch (Exception $e) {
                 $this->msg['msg'] = 'ERROR - '.$e->getMessage();
                 $this->status = 422;
             }
         }
         else{
-            $this->status= 409;
+            $this->status= 403;
             $this->msg['msg'] = 'only the admin can make updates to this object';
         }
-        
+            
         $response->getBody()->write(json_encode($this->msg));
-
         return $response->withStatus($this->status);
     }
 

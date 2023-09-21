@@ -1,13 +1,17 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import { newDrinkSchema } from '@/schemas/global'
+import { IngredientType, newDrinkSchema } from '@/schemas/global'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { SelectIng } from '../SelectIng'
+import api from '@/api'
+import { useState, useEffect } from 'react'
 export type newDrinkType = z.infer<typeof newDrinkSchema>
 
 export default function DrinkForm() {
+  const [ingredients, setIngredients] = useState<IngredientType[]>([])
   const {
     handleSubmit,
     register,
@@ -23,8 +27,13 @@ export default function DrinkForm() {
       name: '',
     },
   })
+  const getData = async () => {
+    const r = await api.ingredient.get()
+    if (r.success) {
+      setIngredients(r.data.data)
+    }
+  }
   const { back } = useRouter()
-  console.log(errors)
 
   const handleFormSubmit = async (data: any) => {
     delete data.size
@@ -46,6 +55,10 @@ export default function DrinkForm() {
         console.log(response)
       })
   }
+
+  useEffect(() => {
+    getData()
+  }, [])
 
   return (
     <form
@@ -81,6 +94,25 @@ export default function DrinkForm() {
         className="bg-inputBg rounded-md p-1 w-full h-[128px]"
         {...register('description')}
       />
+      <div>
+        <span className="text-xs text-font font-light leading-relaxed">
+          Clique nos ingredientes que você deseja adicionar/retirar deste prato
+        </span>
+        <div className="flex justify-around flex-wrap gap-y-1.5 gap-x-1 border border-gray-300 p-1.5 rounded-md max-h-32 overflow-y-auto">
+          {/* ingredients */}
+          {ingredients.map((ing) => {
+            return (
+              <SelectIng
+                {...register('ingredientsIDs')}
+                key={crypto.randomUUID()}
+                inpValue={ing.id}
+              >
+                {ing.name}
+              </SelectIng>
+            )
+          })}
+        </div>
+      </div>
 
       <button
         type="submit"

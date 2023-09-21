@@ -6,10 +6,15 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import confirmed from '@/image/confirmed.svg'
 import Money from '../Money'
+import api from '@/api'
+import { useAuth } from '@/hooks/useGetFromAuth'
+import { useAuthStore } from '@/store/auth'
 export default function ToPayment() {
   const [page, setPage] = useState<number>(1)
   const [show, setShow] = useState<boolean>(false)
   const { push } = useRouter()
+
+  const user = useAuth(useAuthStore, (state) => state.state.user)
   return (
     <>
       {show && (
@@ -51,12 +56,17 @@ export default function ToPayment() {
         {page === 1 ? <Pix /> : <Money />}
         <div className="bottom-4 flex w-full justify-center">
           <span
-            onClick={() => {
-              setShow(true)
-              setTimeout(() => {
-                setShow(false)
-                push('/')
-              }, 1000)
+            onClick={async () => {
+              const r = await api.order.clear({
+                userEmail: String(user?.email),
+              })
+              if (r.data.success) {
+                setShow(true)
+                setTimeout(() => {
+                  setShow(false)
+                  push('/')
+                }, 1000)
+              }
             }}
             className="font-medium rounded-full bg-buttonBg px-2"
           >

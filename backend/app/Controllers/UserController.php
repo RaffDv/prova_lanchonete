@@ -11,10 +11,9 @@ class UserController{
     public  \Models\BD | null $db = null;
 
     public function get(Request $request, Response $response){
-
-        $this->loadDB();
-        $header = $request->getHeaders();
-
+        
+        $this->loadDB();    
+        
         $filter = $request->getQueryParams();
         try {
             $data = $this->db->select_sql('users', ['fields' => '*'], $filter)[0];
@@ -24,17 +23,16 @@ class UserController{
             $this->msg['data'] = 'ERROR     '.$e->getMessage();
             $this->status=400;
         }
-
+        
         $response->getBody()->write(json_encode($this->msg));
-
         return $response->withStatus($this->status);
     }
     
     public function unique(Request $request, Response $response,array $args) 
     {
         $this->loadDB();
-        
         $this->status=500;
+
         try {
             $r =json_encode( ['data' => $this->db->select_sql('users',['fields'=>'*'],$args)]);
             $this->status = 200;

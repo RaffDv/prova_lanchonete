@@ -1,6 +1,11 @@
 'use client'
 import api from '@/api'
-import { UpdateDrinkType, UpdateDrinkSchema, drinkType } from '@/schemas/global'
+import {
+  UpdateDrinkType,
+  UpdateDrinkSchema,
+  drinkType,
+  IngredientType,
+} from '@/schemas/global'
 import { ArrowLeft, Images, TrashSimple } from '@phosphor-icons/react'
 
 import { useRouter } from 'next/navigation'
@@ -15,27 +20,29 @@ import { motion } from 'framer-motion'
 
 export default function DrinkEdit({ id }: { id: string }) {
   const [data, setData] = useState<drinkType>({} as drinkType)
+  const [ingredients, setIngredients] = useState<IngredientType[]>([])
+
   const [success, setSuccess] = useState<boolean | null>(null)
 
   const { back } = useRouter()
   const getData = async () => {
     const r = await api.drink.unique(Number(id))
+    const rI = await api.ingredient.get()
     if (r.success) {
       setData(r.data.data)
     }
+    if (rI.success) {
+      setIngredients(rI.data.data)
+    }
   }
 
-  const submit = (data: UpdateDrinkType) => {
-    console.log('submit')
-
+  const submit = (dataForm: UpdateDrinkType) => {
     const formData = new FormData()
-
-    if (data?.image.length > 0) {
-      formData.append('image', data.image[0])
+    if (dataForm?.image.length > 0) {
+      formData.append('image', dataForm.image[0])
     }
-    delete data.image
-    delete data.ingredientsIDs
-    formData.append('data', JSON.stringify(data))
+    delete dataForm.image
+    formData.append('data', JSON.stringify(dataForm))
 
     axios({
       method: 'post',
@@ -46,10 +53,10 @@ export default function DrinkEdit({ id }: { id: string }) {
       .then(function (response) {
         console.log(response.data)
         setSuccess(true)
-        // setTimeout(() => {
-        //   setSuccess(null)
-        //   back()
-        // }, 1500)
+        setTimeout(() => {
+          setSuccess(null)
+          back()
+        }, 500)
       })
       .catch(function (response) {
         console.log(response)
@@ -144,24 +151,21 @@ export default function DrinkEdit({ id }: { id: string }) {
               </span>
               <div className="flex justify-around flex-wrap gap-y-1.5 gap-x-1 border border-gray-300 p-1.5 rounded-md max-h-32 overflow-y-auto">
                 {/* ingredients */}
-                <SelectIng inpValue="1" req {...register('ingredientsIDs')}>
-                  ingredient
-                </SelectIng>
-                <SelectIng inpValue="2" req {...register('ingredientsIDs')}>
-                  ingredient
-                </SelectIng>
-                <SelectIng inpValue="3" req {...register('ingredientsIDs')}>
-                  ingredient
-                </SelectIng>
-                <SelectIng inpValue="4" req {...register('ingredientsIDs')}>
-                  ingredient
-                </SelectIng>
-                <SelectIng inpValue="5" req {...register('ingredientsIDs')}>
-                  ingredient
-                </SelectIng>
-                <SelectIng inpValue="6" req {...register('ingredientsIDs')}>
-                  ingredient
-                </SelectIng>
+                {ingredients.map((ing) => {
+                  const refv = data.ingredients?.findIndex(
+                    (itm) => itm.id === ing.id,
+                  )
+                  return (
+                    <SelectIng
+                      {...register('ingredientsIDs')}
+                      key={crypto.randomUUID()}
+                      inpValue={ing.id}
+                      req={refv !== -1}
+                    >
+                      {ing.name}
+                    </SelectIng>
+                  )
+                })}
               </div>
             </div>
           </div>

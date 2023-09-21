@@ -5,6 +5,7 @@ import { drinkType } from '@/schemas/global'
 import { Triangle } from 'react-loader-spinner'
 import Drink from '@/components/Drink'
 import NewItemButton from './defaultComponents/NewItemButton'
+import { useAuthStore } from '@/store/auth'
 export default function Bebidas() {
   const [drinkInfo, setDrinkInfo] = useState<drinkType[] | null>(null)
   const get = async () => {
@@ -13,6 +14,9 @@ export default function Bebidas() {
       setDrinkInfo(r.data.data)
     }
   }
+  const {
+    actions: { isAdmin },
+  } = useAuthStore()
   useEffect(() => {
     if (drinkInfo === null || (drinkInfo && drinkInfo.length < 1)) {
       get()
@@ -21,19 +25,12 @@ export default function Bebidas() {
 
   return (
     <main className="flex w-full h-full flex-col items-center">
-      <NewItemButton path="/admin/drink/new" />
+      {isAdmin() && <NewItemButton path="/admin/drink/new" />}
 
       {drinkInfo && drinkInfo?.length > 0 ? (
         <div className="flex flex-col w-full mt-6">
           {drinkInfo.map((drink) => (
-            <Drink
-              key={crypto.randomUUID()}
-              description={drink.description}
-              name={drink.name}
-              id={drink.id}
-              image={drink.image}
-              value={drink.value}
-            />
+            <Drink key={crypto.randomUUID()} drink={drink} />
           ))}
         </div>
       ) : (

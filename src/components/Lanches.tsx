@@ -6,6 +6,7 @@ import Lanche from '@/components/Lanche'
 import { foodType } from '@/schemas/global'
 import { Triangle } from 'react-loader-spinner'
 import NewItemButton from './defaultComponents/NewItemButton'
+import { useAuthStore } from '@/store/auth'
 
 export default function Lanches() {
   const [lanches, setLanches] = useState<foodType[] | null>(null)
@@ -15,6 +16,9 @@ export default function Lanches() {
       setLanches(r.data.data)
     }
   }
+  const {
+    actions: { isAdmin },
+  } = useAuthStore()
   useEffect(() => {
     if (lanches === null || (lanches && lanches.length === 0)) {
       get()
@@ -25,22 +29,12 @@ export default function Lanches() {
       className="flex w-full h-full flex-col items-center justify-start mt-6"
       id="listaLanches"
     >
-      <NewItemButton path="/admin/food/new" />
+      {isAdmin() && <NewItemButton path="/admin/food/new" />}
 
       {lanches && lanches.length > 0 ? (
         <>
           {lanches.map((lanche) => (
-            <Lanche
-              key={crypto.randomUUID()}
-              id={lanche.id}
-              image={lanche.image}
-              description={lanche.description}
-              ingredients={lanche.ingredients}
-              name={lanche.name}
-              valueG={lanche.valueG}
-              valueM={lanche.valueM}
-              valueP={lanche.valueP}
-            />
+            <Lanche key={crypto.randomUUID()} food={lanche} />
           ))}
         </>
       ) : (

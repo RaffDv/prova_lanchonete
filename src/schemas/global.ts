@@ -54,25 +54,21 @@ export const JwtSchema = z.object({
   privileges: z.number(),
 })
 
-export const newFoodSchema = z.object({
-  name: z.string().min(1, 'Este campo é obrigatório'),
-  description: z.string().min(1, 'Este campo é obrigatório'),
-  ingredients: z.string().min(1, 'Este campo é obrigatório'),
-  image: z.any(),
-  size: z.string().array().optional(),
-  valueP: z.string().optional(),
-  valueM: z.string().optional(),
-  valueG: z.string().optional(),
-})
 export const foodSchema = z.object({
   id: z.number(),
   name: z.string().min(1, 'Este campo é obrigatório'),
   description: z.string().min(1, 'Este campo é obrigatório'),
-  ingredients: z.string().min(1, 'Este campo é obrigatório').optional(),
   image: z.string(),
   valueP: z.string().optional(),
   valueM: z.string().optional(),
   valueG: z.string().optional(),
+  ingredients: z
+    .object({
+      name: z.string(),
+      id: z.string(),
+    })
+    .array()
+    .optional(),
 })
 export type foodType = z.infer<typeof foodSchema>
 
@@ -81,6 +77,7 @@ export const newDrinkSchema = z.object({
   description: z.string(),
   image: z.any(),
   value: z.string(),
+  ingredientsIDs: z.string().array(),
 })
 
 export const UpdateDrinkSchema = z.object({
@@ -88,7 +85,7 @@ export const UpdateDrinkSchema = z.object({
   description: z.string().min(1, 'Este campo é obrigatório'),
   image: z.any(),
   value: z.string(),
-  ingredientsIDs: z.string().array().optional(),
+  ingredientsIDs: z.string().array(),
 })
 export type UpdateDrinkType = z.infer<typeof UpdateDrinkSchema>
 
@@ -98,6 +95,13 @@ export const drinkSchema = z.object({
   description: z.string().min(1, 'Este campo é obrigatório'),
   image: z.string(),
   value: z.string(),
+  ingredients: z
+    .object({
+      name: z.string(),
+      id: z.string(),
+    })
+    .array()
+    .optional(),
 })
 
 export type drinkType = z.infer<typeof drinkSchema>
@@ -140,6 +144,71 @@ export const UpdateFoodSchema = z.object({
 
 export type UpdateFoodType = z.infer<typeof UpdateFoodSchema>
 
+export const IngredientSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  amount: z.string(),
+})
+export type IngredientType = z.infer<typeof IngredientSchema>
+
+const newIngredientSchema = z.object({
+  name: z.string(),
+  amount: z.number(),
+})
+
+export type newIngredientType = z.infer<typeof newIngredientSchema>
+
+export const OrderSchema = z.object({
+  foods: z.array(
+    z.object({
+      orderID: z.number(),
+      value: z.number(),
+      food: z.object({
+        id: z.number(),
+        name: z.string(),
+        description: z.string(),
+        image: z.string(),
+        valueP: z.string().optional(),
+        valueM: z.string().optional(),
+        valueG: z.string().optional(),
+      }),
+    }),
+  ),
+  drinks: z.array(
+    z.object({
+      orderID: z.number(),
+      value: z.number(),
+      drink: z.object({
+        id: z.number(),
+        name: z.string(),
+        description: z.string(),
+        image: z.string(),
+        value: z.string(),
+      }),
+    }),
+  ),
+})
+export const newFoodSchema = z.object({
+  name: z.string().min(1, 'Este campo é obrigatório'),
+  description: z.string().min(1, 'Este campo é obrigatório'),
+  ingredientsIDs: z.string().array(),
+  image: z.any(),
+  size: z.string().array().optional(),
+  valueP: z.string().optional(),
+  valueM: z.string().optional(),
+  valueG: z.string().optional(),
+})
+
+export type OrderType = z.infer<typeof OrderSchema>
+
+export const NewOrderSchema = z.object({
+  user_email: z.string().email(),
+  id_food: z.number().optional(),
+  id_drink: z.number().optional(),
+  value: z.number(),
+})
+
+export type NewOrderType = z.infer<typeof NewOrderSchema>
 //  ZUSTEND USER STORE TYPES
 export type AuthUserType = {
   email: string

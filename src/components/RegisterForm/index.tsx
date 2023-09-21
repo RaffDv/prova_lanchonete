@@ -2,7 +2,7 @@
 'use client'
 import Image from 'next/image'
 import logo from '@/image/logo.jpg'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { ArrowRight } from '@phosphor-icons/react'
 import { AccountSchema } from '@/schemas/global'
 import { useForm } from 'react-hook-form'
@@ -11,6 +11,8 @@ import { z } from 'zod'
 import Error from '../defaultComponents/Error'
 import api from '@/api'
 import Link from 'next/link'
+import { useAuthStore } from '@/store/auth'
+import { useRouter } from 'next/navigation'
 export type formProps = z.infer<typeof AccountSchema>
 export default function RegisterForm() {
   const {
@@ -31,8 +33,11 @@ export default function RegisterForm() {
       },
     },
   })
-
+  const { push } = useRouter()
   const [page, setPage] = useState<number>(1)
+  const {
+    actions: { login, getToken },
+  } = useAuthStore()
 
   const handleFormSubmit = async (data: formProps) => {
     if (page === 1) return
@@ -45,6 +50,16 @@ export default function RegisterForm() {
     if (r.data.success) {
       const email = watch('account.email')
       const pass = watch('account.pass')
+      await login({
+        email,
+        pass,
+        privileges: 0,
+        token: '',
+      })
+      const token = getToken()
+      if (token !== '') {
+        push(`/API/user/login?token=${token}`)
+      }
     }
   }
   console.log(errors)
@@ -189,8 +204,9 @@ export default function RegisterForm() {
             className={`font-semibold bg-buttonBg p-2  color-font rounded-2xl flex justify-center ${
               page === 2 ? 'w-fit' : 'w-16'
             }`}
-            onClick={() => {
+            onClick={async (e) => {
               if (page === 1) {
+                e.preventDefault()
                 setPage(2)
               }
             }}

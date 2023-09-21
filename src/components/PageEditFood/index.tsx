@@ -1,6 +1,11 @@
 'use client'
 import api from '@/api'
-import { UpdateFoodSchema, UpdateFoodType, foodType } from '@/schemas/global'
+import {
+  IngredientType,
+  UpdateFoodSchema,
+  UpdateFoodType,
+  foodType,
+} from '@/schemas/global'
 import { ArrowLeft, Images, TrashSimple } from '@phosphor-icons/react'
 
 import { useRouter } from 'next/navigation'
@@ -15,38 +20,44 @@ import { motion } from 'framer-motion'
 
 export default function PageEditFood({ id }: { id: string }) {
   const [data, setData] = useState<foodType>({} as foodType)
+  const [ingredients, setIngredients] = useState<IngredientType[]>([])
+
   const [success, setSuccess] = useState<boolean | null>(null)
 
   const { back } = useRouter()
   const getData = async () => {
     const r = await api.food.unique(Number(id))
+    const rI = await api.ingredient.get()
     if (r.success) {
       setData(r.data.data)
+    }
+    if (rI.success) {
+      setIngredients(rI.data.data)
     }
   }
 
   const submit = (data: UpdateFoodType) => {
+    console.log(data.ingredientsIDs)
+
     const formData = new FormData()
     if (data.image.length > 0) {
       formData.append('image', data.image[0])
     }
     delete data.image
-    delete data.ingredientsIDs
     formData.append('data', JSON.stringify(data))
 
     axios({
-      method: 'put',
+      method: 'post',
       url: `http://localhost:4000/api/food/${id}`,
       data: formData,
       withCredentials: true,
     })
       .then(function (response) {
-        console.log(response.data)
         setSuccess(true)
         setTimeout(() => {
           setSuccess(null)
           back()
-        }, 1500)
+        }, 500)
       })
       .catch(function (response) {
         console.log(response)
@@ -55,8 +66,11 @@ export default function PageEditFood({ id }: { id: string }) {
   }
 
   useEffect(() => {
-    getData()
+    if (ingredients.length === 0) {
+      getData()
+    }
   }, [])
+
   const {
     handleSubmit,
     register,
@@ -74,7 +88,6 @@ export default function PageEditFood({ id }: { id: string }) {
   console.log(errors)
   const hasNewImage = watch('image').length > 0
   const image = watch('image')[0]
-  console.log(hasNewImage)
 
   return (
     <>
@@ -141,24 +154,21 @@ export default function PageEditFood({ id }: { id: string }) {
               </span>
               <div className="flex justify-around flex-wrap gap-y-1.5 gap-x-1 border border-gray-300 p-1.5 rounded-md max-h-32 overflow-y-auto">
                 {/* ingredients */}
-                <SelectIng inpValue="1" req {...register('ingredientsIDs')}>
-                  ingredient
-                </SelectIng>
-                <SelectIng inpValue="2" req {...register('ingredientsIDs')}>
-                  ingredient
-                </SelectIng>
-                <SelectIng inpValue="3" req {...register('ingredientsIDs')}>
-                  ingredient
-                </SelectIng>
-                <SelectIng inpValue="4" req {...register('ingredientsIDs')}>
-                  ingredient
-                </SelectIng>
-                <SelectIng inpValue="5" req {...register('ingredientsIDs')}>
-                  ingredient
-                </SelectIng>
-                <SelectIng inpValue="6" req {...register('ingredientsIDs')}>
-                  ingredient
-                </SelectIng>
+                {ingredients.map((ing) => {
+                  const refv = data.ingredients?.findIndex(
+                    (itm) => itm.id === ing.id,
+                  )
+                  return (
+                    <SelectIng
+                      {...register('ingredientsIDs')}
+                      key={crypto.randomUUID()}
+                      inpValue={ing.id}
+                      req={refv !== -1}
+                    >
+                      {ing.name}
+                    </SelectIng>
+                  )
+                })}
               </div>
             </div>
           </div>
