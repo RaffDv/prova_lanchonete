@@ -1,22 +1,20 @@
 'use client'
-import Endereco from '@/components/Endereco'
-import Perfil from '@/components/Perfil'
-import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import logo from '@/image/logo.svg'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import api from '@/api'
 import { userType } from '@/schemas/global'
+import User from '@/components/UserEdit/User/User'
+import Address from '@/components/UserEdit/Address/Address'
 
-export default function Page({ params }: { params: { id: string } }) {
+export default function Page({ params }: { params: { email: string } }) {
   const [page, setPage] = useState<number>(1)
   const [data, setData] = useState<userType>({} as userType)
-  const pathname = usePathname()
   const { back } = useRouter()
-  console.log(pathname)
+
   const getdata = async () => {
-    const r = await api.user.unique({ email: params.id })
+    const r = await api.user.unique({ email: params.email })
     if (r.success) {
       setData(r.data.data)
     }
@@ -28,6 +26,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
   return (
     <section className="w-full h-full flex flex-col">
+      {/* Inicio do header */}
       <div className="flex m-4 items-center w-1/2 justify-between">
         <button
           onClick={back}
@@ -56,14 +55,10 @@ export default function Page({ params }: { params: { id: string } }) {
           Endereço
         </button>
       </div>
-      {page === 1 ? <Perfil /> : <Endereco />}
-      <div className="flex justify-center items-center">
-        <Link
-          href={`${pathname}/form`}
-          className="flex mt-12 w-32 h-7 bg-buttonBg border rounded-full text-font font-bold item-center justify-center"
-        >
-          Editar
-        </Link>
+      {/* Fim do header */}
+      <div className="flex flex-col justify-center items-center">
+        {page === 1 && <User params={params} />}
+        {page === 2 && <Address params={params} />}
       </div>
     </section>
   )
